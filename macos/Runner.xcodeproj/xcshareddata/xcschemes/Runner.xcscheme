@@ -5,6 +5,7 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+<<<<<<< HEAD
       <PreActions>
          <ExecutionAction
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
@@ -23,6 +24,8 @@
             </ActionContent>
          </ExecutionAction>
       </PreActions>
+=======
+>>>>>>> 25c5c1d3098d837da01c52993e7c6de165e07b94
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -33,7 +36,11 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
                BuildableName = "app1.app"
+=======
+               BuildableName = "nanys_care.app"
+>>>>>>> 25c5c1d3098d837da01c52993e7c6de165e07b94
                BlueprintName = "Runner"
                ReferencedContainer = "container:Runner.xcodeproj">
             </BuildableReference>
@@ -49,7 +56,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
             BuildableName = "app1.app"
+=======
+            BuildableName = "nanys_care.app"
+>>>>>>> 25c5c1d3098d837da01c52993e7c6de165e07b94
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -84,7 +95,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
             BuildableName = "app1.app"
+=======
+            BuildableName = "nanys_care.app"
+>>>>>>> 25c5c1d3098d837da01c52993e7c6de165e07b94
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -101,7 +116,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
             BuildableName = "app1.app"
+=======
+            BuildableName = "nanys_care.app"
+>>>>>>> 25c5c1d3098d837da01c52993e7c6de165e07b94
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
