@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // Asegúrate de que el archivo profile_screen.dart esté en la misma carpeta
-import 'profile_screen.dart'; 
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,11 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
     const primaryPurple = Color(0xFFAC7099);
 
     // CONTROL DE PANTALLAS: Definimos qué se dibuja en el body según el índice
-    final List<Widget> _screens = [
-      _buildHomeContent(),           // Índice 0: Tu contenido original del Home
+    final List<Widget> screens = [
+      _buildHomeContent(), // Índice 0: Tu contenido original del Home
       const Center(child: Text('Pantalla Notificaciones')), // Índice 1
-      const Center(child: Text('Pantalla Agenda')),         // Índice 2
-      const ProfileScreen(),         // Índice 3: Tu nueva pantalla de Perfil
+      const Center(child: Text('Pantalla Agenda')), // Índice 2
+      const ProfileScreen(), // Índice 3: Tu nueva pantalla de Perfil
     ];
 
     return Scaffold(
@@ -42,14 +42,20 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notis'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Agenda'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notis',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Agenda',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
       ),
 
       // El body renderiza dinámicamente la vista seleccionada de la lista
-      body: _screens[_selectedIndex],
+      body: screens[_selectedIndex],
     );
   }
 
@@ -64,23 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
-                const Spacer(), 
+                const Spacer(),
                 const Column(
-                  crossAxisAlignment: CrossAxisAlignment.end, 
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'Hola, Krystina', 
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      'Hola, Krystina',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                     Text(
-                      'Encuentra a tu cuidador ideal', 
+                      'Encuentra a tu cuidador ideal',
                       style: TextStyle(color: Colors.black54, fontSize: 12),
                     ),
                   ],
                 ),
-                const SizedBox(width: 12), 
-                
-                // Envolvemos el CircleAvatar en un GestureDetector para que también 
+                const SizedBox(width: 12),
+
+                // Envolvemos el CircleAvatar en un GestureDetector para que también
                 // te redirija a la vista de perfil al hacer clic en él.
                 GestureDetector(
                   onTap: () => _onItemTapped(3), // El índice 3 es el Perfil
@@ -106,9 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin: const EdgeInsets.only(right: 10),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink, 
-                      foregroundColor: Colors.white, 
-                      elevation: 3, 
+                      backgroundColor: Colors.pink,
+                      foregroundColor: Colors.white,
+                      elevation: 3,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -124,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const Padding(
             padding: EdgeInsets.only(left: 20, top: 25, bottom: 10),
             child: Text(
-              'Catálogo de servicios', 
+              'Catálogo de servicios',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -146,10 +155,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.black.withOpacity(0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
-                      )
+                      ),
                     ],
                     image: DecorationImage(
-                      image: NetworkImage('https://source.unsplash.com/featured/?food,cooking&sig=$index'),
+                      image: NetworkImage(
+                        'https://source.unsplash.com/featured/?food,cooking&sig=$index',
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -159,14 +170,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
-                        colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                        colors: [
+                          Colors.black.withOpacity(0.7),
+                          Colors.transparent,
+                        ],
                       ),
                     ),
                     padding: const EdgeInsets.all(15),
                     alignment: Alignment.bottomLeft,
                     child: Text(
                       'Menú Especial $index',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 );
@@ -177,3 +195,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}

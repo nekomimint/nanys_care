@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../OtherScreens/addChild_screen.dart';
 
-
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     // colores
-    const customGreen = Color(0xFFAC7099);  // Color(0xFF2E7D73) anteriro
+    const customGreen = Color(0xFFAC7099); // Color(0xFF2E7D73) anteriro
     const backgroundLight = Color(0xFFF4F9F8);
 
     return Scaffold(
@@ -22,9 +21,14 @@ class ProfileScreen extends StatelessWidget {
             // 1. CABECERA VERDE CON PERFIL
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 30),
+              padding: const EdgeInsets.only(
+                top: 40,
+                left: 20,
+                right: 20,
+                bottom: 30,
+              ),
               decoration: const BoxDecoration(
-                color: const Color(0xFFAC7099),   // customGreen (anterior)
+                color: Color(0xFFAC7099), // customGreen (anterior)
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(0),
                   bottomRight: Radius.circular(0),
@@ -104,21 +108,28 @@ class ProfileScreen extends StatelessWidget {
                           leading: const Icon(Icons.add, color: Colors.black54),
                           title: const Text(
                             'Agregar niño',
-                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                           ),
-                          trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
-                          onTap: ()
-                          {
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.black54,
+                          ),
+                          onTap: () {
                             // Aqui se abre el formulario para agregar a los mocosos
                             showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true, // Esto permite que el modal tome la altura personalizada
-                            backgroundColor: Colors.transparent, // Deja que el Container controle los bordes redondeados
-                            builder: (BuildContext context) {
-                            return const AddChildBottomSheet();
-                            
-                            },
-                          );
+                              context: context,
+                              isScrollControlled:
+                                  true, // Esto permite que el modal tome la altura personalizada
+                              backgroundColor: Colors
+                                  .transparent, // Deja que el Container controle los bordes redondeados
+                              builder: (BuildContext context) {
+                                return const AddChildBottomSheet();
+                              },
+                            );
                           },
                         ),
                         // Carrusel de niños en la parte inferior de la tarjeta
@@ -126,7 +137,11 @@ class ProfileScreen extends StatelessWidget {
                           height: 130,
                           child: ListView(
                             scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              bottom: 16,
+                            ),
                             children: [
                               _buildChildCard('Leo M.'),
                               _buildChildCard('Mia G.'),
@@ -170,7 +185,11 @@ class ProfileScreen extends StatelessWidget {
           title,
           style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Colors.black54,
+        ),
         onTap: onTap,
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart'; // Vista registros
-import 'home_screen.dart';     // Nueva vista de inicio importada
+import 'home_screen.dart'; // Nueva vista de inicio importada
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -44,7 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text(
                       'Bienvenido',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -53,31 +56,39 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(color: Colors.white54, fontSize: 14),
                     ),
                     const SizedBox(height: 36),
-                    
+
                     // Campo de Correo
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: 'Correo Electrónico',
-                        prefixIcon: Icon(Icons.email_outlined, color: Colors.white70),
+                        prefixIcon: Icon(
+                          Icons.email_outlined,
+                          color: Colors.white70,
+                        ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty || !value.contains('@')) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            !value.contains('@')) {
                           return 'Por favor, ingresa un correo válido';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Campo de Contraseña
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña',
-                        prefixIcon: Icon(Icons.lock_open_outlined, color: Colors.white70),
+                        prefixIcon: Icon(
+                          Icons.lock_open_outlined,
+                          color: Colors.white70,
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.length < 6) {
@@ -87,41 +98,53 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Botón de Ingresar
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Autenticando de forma segura...')),
+                            const SnackBar(
+                              content: Text('Autenticando de forma segura...'),
+                            ),
                           );
 
                           // Redirección directa a la pantalla de inicio tras validar
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
                           );
                         }
                       },
                       child: const Text('Iniciar Sesión'),
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Enlace a Registro
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('¿No tienes cuenta? ', style: TextStyle(color: Colors.white54)),
+                        const Text(
+                          '¿No tienes cuenta? ',
+                          style: TextStyle(color: Colors.white54),
+                        ),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterScreen(),
+                              ),
                             );
                           },
                           child: const Text(
                             'Regístrate aquí',
-                            style: TextStyle(color: Color(0xFF121212), fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Color(0xFF121212),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -135,4 +158,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
+}

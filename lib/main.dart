@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
         // Cambiado a light ya que la paleta de la imagen es clara
         brightness: Brightness.light,
         // Fondo rosa muy claro/pastel de la imagen
-        scaffoldBackgroundColor: const Color(0xFFFFF2EC),  
+        scaffoldBackgroundColor: const Color(0xFFFFF2EC),
         // Color lila/morado principal de los botones y textos destacados
-        primaryColor: const Color(0xFFAC7099), 
+        primaryColor: const Color(0xFFAC7099),
 
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             // Borde lila al seleccionar el input
-            borderSide: const BorderSide(color: Color(0xFFAC7099), width: 2), 
+            borderSide: const BorderSide(color: Color(0xFFAC7099), width: 2),
           ),
           // Texto de etiqueta en gris oscuro para que contraste con el fondo blanco
           labelStyle: const TextStyle(color: Colors.black54),
@@ -47,10 +47,14 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
       home: const LoginScreen(),
     );
   }
+}
