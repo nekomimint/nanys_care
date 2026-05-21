@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //import '../OtherScreens/addChild_screen.dart';
 
-import '../OtherScreens/addChild_screen.dart';
+import '../widgets/addChild_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

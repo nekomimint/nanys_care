@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart'; // Vista registros
-import 'home_screen.dart'; // Nueva vista de inicio importada
+import '../home_screen.dart'; // Nueva vista de inicio importada
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
