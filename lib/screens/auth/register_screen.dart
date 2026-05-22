@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -9,12 +10,42 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  String _role = 'Tutor'; // Rol por defecto
+
+  Future<void> _createAccount() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Guardar nombre en Firebase Auth
+      await result.user?.updateDisplayName(_nameController.text.trim());
+
+      // Regresa al login — el StreamBuilder se encarga de navegar a Home
+      if (mounted) Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      String message = 'Error al crear cuenta';
+      if (e.code == 'email-already-in-use')
+        message = 'Ese correo ya está registrado';
+      if (e.code == 'weak-password') message = 'La contraseña es muy débil';
+      if (e.code == 'invalid-email') message = 'Correo inválido';
+
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+    }
+  }
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -23,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+      appBar: AppBar(title: const Text('Crear cuenta')),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -32,113 +63,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
-                      'Crear Cuenta',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(labelText: 'Nombre'),
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Ingresa tu nombre' : null,
                     ),
-                    const SizedBox(height: 24),
-
-                    // Selector de Rol (Tutor / Cuidador)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Registrarme como: ',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(width: 12),
-                        DropdownButton<String>(
-                          value: _role,
-                          dropdownColor: const Color(0xFF1E1E1E),
-                          style: const TextStyle(
-                            color: Color(0xFFBB86FC),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          items: <String>['Tutor', 'Cuidador'].map((
-                            String value,
-                          ) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              _role = newValue!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Campo de Correo
                     TextFormField(
                       controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Correo'),
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Correo Electrónico',
-                        prefixIcon: Icon(
-                          Icons.email_outlined,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            !value.contains('@')) {
-                          return 'Por favor, ingresa un correo válido';
-                        }
-                        return null;
-                      },
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Ingresa tu correo' : null,
                     ),
-                    const SizedBox(height: 16),
-
-                    // Campo de Contraseña
                     TextFormField(
                       controller: _passwordController,
-                      obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña',
-                        prefixIcon: Icon(
-                          Icons.lock_open_outlined,
-                          color: Colors.white70,
-                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.length < 6) {
-                          return 'La contraseña debe tener al menos 6 caracteres';
-                        }
-                        return null;
-                      },
+                      obscureText: true,
+                      validator: (v) => v == null || v.length < 6
+                          ? 'Mínimo 6 caracteres'
+                          : null,
                     ),
                     const SizedBox(height: 24),
-
-                    // Botón de Registro
                     ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Registrando $_role exitosamente...',
-                              ),
-                            ),
-                          );
-                          Navigator.pop(
-                            context,
-                          ); // Regresa al Login tras simular el éxito
-                        }
-                      },
-                      child: const Text('Registrarse'),
+                      onPressed: _createAccount,
+                      child: const Text('Crear cuenta'),
                     ),
                   ],
                 ),

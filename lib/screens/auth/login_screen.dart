@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart'; // Vista registros
-import '../home_screen.dart'; // Nueva vista de inicio importada
+import 'register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,8 +13,71 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  // LOGIN CON EMAIL
+  Future<void> signInWithEmail() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Inicio de sesión exitoso')));
+    } on FirebaseAuthException catch (e) {
+      String message = 'Error al iniciar sesión';
+
+      if (e.code == 'user-not-found') {
+        message = 'Usuario no encontrado';
+      } else if (e.code == 'wrong-password') {
+        message = 'Contraseña incorrecta';
+      } else if (e.code == 'invalid-email') {
+        message = 'Correo inválido';
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        // En web Firebase maneja todo solo con un popup
+        final provider = GoogleAuthProvider();
+        await FirebaseAuth.instance.signInWithPopup(provider);
+        return;
+      }
+
+      // Flujo móvil
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final idToken = googleUser.authentication.idToken;
+      final authorization = await googleUser.authorizationClient
+          .authorizationForScopes(['email', 'profile']);
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: idToken,
+        accessToken: authorization?.accessToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } on GoogleSignInException catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error Google: ${e.code}')));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
 
   @override
   void dispose() {
@@ -32,122 +97,39 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Icon(
-                      Icons.lock_outline,
-                      size: 80,
-                      color: Color(0xFFBB86FC),
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Bienvenido',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Accede a tu cuenta de Tutor o Cuidador',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white54, fontSize: 14),
-                    ),
-                    const SizedBox(height: 36),
-
-                    // Campo de Correo
                     TextFormField(
                       controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Correo Electrónico',
-                        prefixIcon: Icon(
-                          Icons.email_outlined,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            !value.contains('@')) {
-                          return 'Por favor, ingresa un correo válido';
-                        }
-                        return null;
-                      },
+                      decoration: const InputDecoration(labelText: 'Correo'),
                     ),
-                    const SizedBox(height: 16),
-
-                    // Campo de Contraseña
                     TextFormField(
                       controller: _passwordController,
-                      obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña',
-                        prefixIcon: Icon(
-                          Icons.lock_open_outlined,
-                          color: Colors.white70,
-                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.length < 6) {
-                          return 'La contraseña debe tener al menos 6 caracteres';
-                        }
-                        return null;
-                      },
                     ),
-                    const SizedBox(height: 24),
-
-                    // Botón de Ingresar
                     ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Autenticando de forma segura...'),
-                            ),
-                          );
-
-                          // Redirección directa a la pantalla de inicio tras validar
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('Iniciar Sesión'),
+                      onPressed: signInWithEmail,
+                      child: const Text('Entrar'),
                     ),
+
                     const SizedBox(height: 16),
 
-                    // Enlace a Registro
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          '¿No tienes cuenta? ',
-                          style: TextStyle(color: Colors.white54),
+                    OutlinedButton.icon(
+                      onPressed: signInWithGoogle,
+                      icon: const Icon(Icons.login),
+                      label: const Text('Iniciar con Google'),
+                    ),
+                    // Dentro del Column del Form, después del botón de Google:
+                    TextButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen(),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Regístrate aquí',
-                            style: TextStyle(
-                              color: Color(0xFF121212),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
+                      child: const Text('¿No tienes cuenta? Regístrate'),
                     ),
                   ],
                 ),

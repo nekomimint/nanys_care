@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// Asegúrate de que el archivo profile_screen.dart esté en la misma carpeta
+import 'package:cached_network_image/cached_network_image.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,7 +12,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // Función para manejar el cambio de pestañas abajo
+  // ✅ FIX 1: screens definido UNA sola vez fuera del build()
+  // Antes estaba dentro de build(), se recreaba en cada tap
+  late final List<Widget> _screens = [
+    _buildHomeContent(),
+    const Center(child: Text('Pantalla Notificaciones')),
+    const Center(child: Text('Pantalla Agenda')),
+    const ProfileScreen(),
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -21,19 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Color morado principal que estamos usando para la navegación
     const primaryPurple = Color(0xFFAC7099);
 
-    // CONTROL DE PANTALLAS: Definimos qué se dibuja en el body según el índice
-    final List<Widget> screens = [
-      _buildHomeContent(), // Índice 0: Tu contenido original del Home
-      const Center(child: Text('Pantalla Notificaciones')), // Índice 1
-      const Center(child: Text('Pantalla Agenda')), // Índice 2
-      const ProfileScreen(), // Índice 3: Tu nueva pantalla de Perfil
-    ];
-
     return Scaffold(
-      // 1. LA BARRA DE NAVEGACIÓN SE QUEDA AQUÍ FIJA
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -54,18 +52,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      // El body renderiza dinámicamente la vista seleccionada de la lista
-      body: screens[_selectedIndex],
+      // ✅ FIX 2: IndexedStack en lugar de screens[_selectedIndex]
+      // Antes: destruía y recreaba la pantalla en cada cambio de tab
+      // Ahora: mantiene todas las pantallas vivas, solo muestra la activa
+      body: IndexedStack(index: _selectedIndex, children: _screens),
     );
   }
 
-  // Extraemos tu diseño original del Home a este método auxiliar para no mezclar códigos
   Widget _buildHomeContent() {
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 2. PARTE SUPERIOR: TODO ALINEADO A LA DERECHA (SALUDO + FOTO)
+          // ENCABEZADO
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Row(
@@ -88,11 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(width: 12),
-
-                // Envolvemos el CircleAvatar en un GestureDetector para que también
-                // te redirija a la vista de perfil al hacer clic en él.
                 GestureDetector(
-                  onTap: () => _onItemTapped(3), // El índice 3 es el Perfil
+                  onTap: () => _onItemTapped(3),
                   child: CircleAvatar(
                     radius: 25,
                     backgroundColor: Colors.pink.withOpacity(0.2),
@@ -103,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // 3. FILTROS
+          // FILTROS
           SizedBox(
             height: 50,
             child: ListView.builder(
@@ -138,7 +134,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // 4. CATÁLOGO
+          // ✅ FIX 3: CachedNetworkImage en lugar de NetworkImage
+          // Antes: descargaba la imagen en CADA rebuild, sin caché
+          // Ahora: descarga una vez, guarda en caché, muestra placeholder
+          // ✅ FIX 4: URL de picsum.photos en lugar de source.unsplash.com
+          // Antes: endpoint deprecado que causaba reintentos en bucle
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -147,44 +147,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Container(
                   height: 200,
                   margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        'https://source.unsplash.com/featured/?food,cooking&sig=$index',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black.withOpacity(0.7),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(15),
-                    alignment: Alignment.bottomLeft,
-                    child: Text(
-                      'Menú Especial $index',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // Imagen con caché
+                        CachedNetworkImage(
+                          imageUrl: 'https://picsum.photos/seed/$index/400/200',
+                          fit: BoxFit.cover,
+                          // Mientras carga
+                          placeholder: (context, url) => Container(
+                            color: Colors.grey[200],
+                            child: const Center(
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          // Si falla la carga
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey[200],
+                            child: const Icon(
+                              Icons.broken_image,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+
+                        // Gradiente encima de la imagen
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.7),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Texto encima del gradiente
+                        Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'Menú Especial $index',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
