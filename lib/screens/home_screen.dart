@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'profile_screen.dart';
+import 'search_caregiver_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,29 +70,62 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
+                // BOTON BUSCAR
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+
+                      MaterialPageRoute(
+                        builder: (_) => const SearchCaregiverScreen(),
+                      ),
+                    );
+                  },
+
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+
+                    decoration: BoxDecoration(
+                      color: Colors.pink.withOpacity(0.15),
+
+                      shape: BoxShape.circle,
+                    ),
+
+                    child: const Icon(Icons.search, color: Colors.pink),
+                  ),
+                ),
+
                 const Spacer(),
+
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+
                   children: [
                     Text(
                       'Hola, Krystina',
+
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
+
                     Text(
                       'Encuentra a tu cuidador ideal',
+
                       style: TextStyle(color: Colors.black54, fontSize: 12),
                     ),
                   ],
                 ),
+
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () => _onItemTapped(3),
                   child: CircleAvatar(
                     radius: 25,
+
                     backgroundColor: Colors.pink.withOpacity(0.2),
+
                     child: const Icon(Icons.person, color: Colors.pink),
                   ),
                 ),
