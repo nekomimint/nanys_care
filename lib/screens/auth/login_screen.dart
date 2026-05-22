@@ -3,6 +3,7 @@ import 'register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
+import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,46 +14,36 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  // LOGIN CON EMAIL
+  // Iniciar sesion con email
   Future<void> signInWithEmail() async {
     if (!_formKey.currentState!.validate()) return;
-
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final result = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Inicio de sesión exitoso')));
+      await _authService.guardarPerfilSiEsNuevo(result.user!);
     } on FirebaseAuthException catch (e) {
       String message = 'Error al iniciar sesión';
-
-      if (e.code == 'user-not-found') {
-        message = 'Usuario no encontrado';
-      } else if (e.code == 'wrong-password') {
-        message = 'Contraseña incorrecta';
-      } else if (e.code == 'invalid-email') {
-        message = 'Correo inválido';
-      }
-
+      if (e.code == 'user-not-found') message = 'Usuario no encontrado';
+      if (e.code == 'wrong-password') message = 'Contraseña incorrecta';
+      if (e.code == 'invalid-email') message = 'Correo inválido';
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
+  // Iniciar sesion con Google
   Future<void> signInWithGoogle() async {
     try {
       if (kIsWeb) {
-        // En web Firebase maneja todo solo con un popup
         final provider = GoogleAuthProvider();
-        await FirebaseAuth.instance.signInWithPopup(provider);
+        final result = await FirebaseAuth.instance.signInWithPopup(provider);
+        await _authService.guardarPerfilSiEsNuevo(result.user!);
         return;
       }
 
@@ -61,13 +52,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final idToken = googleUser.authentication.idToken;
       final authorization = await googleUser.authorizationClient
           .authorizationForScopes(['email', 'profile']);
-
       final credential = GoogleAuthProvider.credential(
         idToken: idToken,
         accessToken: authorization?.accessToken,
       );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final result = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+      await _authService.guardarPerfilSiEsNuevo(result.user!);
     } on GoogleSignInException catch (e) {
       ScaffoldMessenger.of(
         context,

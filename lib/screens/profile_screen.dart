@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
-//import '../OtherScreens/addChild_screen.dart';
-
 import '../widgets/addChild_screen.dart';
+import '../core/theme/app_colors.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,44 +8,52 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // colores
-    const customGreen = Color(0xFFAC7099); // Color(0xFF2E7D73) anteriro
-    const backgroundLight = Color(0xFFF4F9F8);
-
     return Scaffold(
-      backgroundColor: backgroundLight,
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
             // 1. CABECERA VERDE CON PERFIL
             Container(
+              //* Estilo del panel de arriba
               width: double.infinity,
               padding: const EdgeInsets.only(
-                top: 40,
-                left: 20,
-                right: 20,
-                bottom: 30,
+                top: 15,
+                left: 15,
+                right: 15,
+                bottom: 15,
               ),
               decoration: const BoxDecoration(
-                color: Color(0xFFAC7099), // customGreen (anterior)
+                color: Color.fromARGB(
+                  255,
+                  15,
+                  134,
+                  57,
+                ), // customGreen (anterior)
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(0),
                   bottomRight: Radius.circular(0),
                 ),
               ),
+              //* Icono de perfil
               child: Row(
                 children: [
                   const CircleAvatar(
                     radius: 35,
-                    backgroundColor: Colors.white,
+                    backgroundColor: AppColors.primary,
                     // Aquí puedes usar NetworkImage o AssetImage más adelante
-                    child: Icon(Icons.person, size: 40, color: customGreen),
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(width: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Tutor: [Tutor\'s Name]',
+                        "Tutor: [Tutor\'s Name]",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -56,19 +62,17 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       Text(
                         '[Tutor\'s Email]',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ],
                   ),
                 ],
               ),
+              //* Fin del icono de perfil
             ),
-            const SizedBox(height: 20),
-
-            // 2. OPCIONES DEL PERFIL
+            const SizedBox(height: 15),
+            //TODO FIN DEL ENCABEZADO
+            //! 2. OPCIONES DEL PERFIL
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(

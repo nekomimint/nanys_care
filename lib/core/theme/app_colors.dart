@@ -9,4 +9,6 @@ class AppColors {
   static const inputFill = Colors.white;
   static const labelText = Colors.black54;
   static const buttonText = Colors.white;
+
+  //* Menu color global
 }

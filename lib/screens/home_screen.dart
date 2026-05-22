@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'profile_screen.dart';
+import './profile/profile_screen.dart';
 import 'search_caregiver_screen.dart';
+import '../models/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final UserModel user; // ← campo
+  const HomeScreen({super.key, required this.user});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _buildHomeContent(),
     const Center(child: Text('Pantalla Notificaciones')),
     const Center(child: Text('Pantalla Agenda')),
-    const ProfileScreen(),
+    ProfileScreen(user: widget.user),
   ];
 
   void _onItemTapped(int index) {
@@ -31,6 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     const primaryPurple = Color(0xFFAC7099);
+
+    final screens = [
+      _buildHomeContent(),
+      const Center(child: Text('Pantalla Notificaciones')),
+      const Center(child: Text('Pantalla Agenda')),
+      ProfileScreen(user: widget.user),
+    ];
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -52,11 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
       ),
-
-      // ✅ FIX 2: IndexedStack en lugar de screens[_selectedIndex]
-      // Antes: destruía y recreaba la pantalla en cada cambio de tab
-      // Ahora: mantiene todas las pantallas vivas, solo muestra la activa
-      body: IndexedStack(index: _selectedIndex, children: _screens),
+      body: IndexedStack(index: _selectedIndex, children: screens),
     );
   }
 

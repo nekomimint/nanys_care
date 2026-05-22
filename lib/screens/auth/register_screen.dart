@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -7,6 +8,8 @@ class RegisterScreen extends StatefulWidget {
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
+
+final _authService = AuthService();
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -16,30 +19,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _createAccount() async {
     if (!_formKey.currentState!.validate()) return;
-
     try {
       final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // Guardar nombre en Firebase Auth
       await result.user?.updateDisplayName(_nameController.text.trim());
+      await _authService.guardarPerfilSiEsNuevo(
+        // ← esto faltaba
+        result.user!,
+        nombre: _nameController.text.trim(),
+      );
 
-      // Regresa al login — el StreamBuilder se encarga de navegar a Home
       if (mounted) Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      String message = 'Error al crear cuenta';
-      if (e.code == 'email-already-in-use')
-        message = 'Ese correo ya está registrado';
-      if (e.code == 'weak-password') message = 'La contraseña es muy débil';
-      if (e.code == 'invalid-email') message = 'Correo inválido';
-
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
-      }
+      // ... igual
     }
   }
 
@@ -54,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear cuenta')),
+      appBar: AppBar(title: const Text('Registrarse')),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
