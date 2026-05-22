@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 // las demas pantallitas:
 import 'profile_screen.dart';
+import 'agenda_screen.dart';
 import 'notifications_screens/mis_solicitudes_screen.dart';
+
 
 
 
@@ -29,11 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
     // Color morado principal que estamos usando para la navegación
     const primaryPurple = Color(0xFFAC7099);
 
-    // CONTROL DE PANTALLAS: Definimos qué se dibuja en el body según el índice
+    // ###################################################################
+    // #####################################################################
+    //################# ESTE ES EL DE LAS PANTALASS ############################
+    //#####################################################################
     final List<Widget> screens = [
       _buildHomeContent(), // contenido original del Home
       const NotificationsScreen(), // Índice 1
-      const Center(child: Text('Pantalla Agenda')), // Índice 2
+      const AgendaScreen(), // Índice 2
       const ProfileScreen(), // pantallita del perfil
     ];
 
