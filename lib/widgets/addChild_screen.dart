@@ -60,7 +60,6 @@ class _AddChildBottomSheetState extends State<AddChildBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // NUEVA PALETA DE COLORES SUAVES (Basada en 0xFFAC7099)
     const customPurple = Color(0xFFAC7099);
     const softPurpleLight = Color(
       0xFFCBA1BD,

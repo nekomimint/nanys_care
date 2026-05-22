@@ -18,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. CABECERA VERDE CON PERFIL
+            // 1. CABECERA
             Container(
               width: double.infinity,
               padding: const EdgeInsets.only(
@@ -39,7 +39,6 @@ class ProfileScreen extends StatelessWidget {
                   const CircleAvatar(
                     radius: 35,
                     backgroundColor: Colors.white,
-                    // Aquí puedes usar NetworkImage o AssetImage más adelante
                     child: Icon(Icons.person, size: 40, color: customGreen),
                   ),
                   const SizedBox(width: 15),

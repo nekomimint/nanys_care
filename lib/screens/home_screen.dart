@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-// Asegúrate de que el archivo profile_screen.dart esté en la misma carpeta
+
+
+// las demas pantallitas:
 import 'profile_screen.dart';
+import 'notifications_screens/mis_solicitudes_screen.dart';
+
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,10 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // CONTROL DE PANTALLAS: Definimos qué se dibuja en el body según el índice
     final List<Widget> screens = [
-      _buildHomeContent(), // Índice 0: Tu contenido original del Home
-      const Center(child: Text('Pantalla Notificaciones')), // Índice 1
+      _buildHomeContent(), // contenido original del Home
+      const NotificationsScreen(), // Índice 1
       const Center(child: Text('Pantalla Agenda')), // Índice 2
-      const ProfileScreen(), // Índice 3: Tu nueva pantalla de Perfil
+      const ProfileScreen(), // pantallita del perfil
     ];
 
     return Scaffold(
