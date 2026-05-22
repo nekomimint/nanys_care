@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-// Asegúrate de que el archivo profile_screen.dart esté en la misma carpeta
 import 'profile_screen.dart';
+import 'search_caregiver_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Extraemos tu diseño original del Home a este método auxiliar para no mezclar códigos
   Widget _buildHomeContent() {
     return SafeArea(
       child: Column(
@@ -70,33 +69,81 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
+
+                // BOTON BUSCAR
+                GestureDetector(
+
+                  onTap: () {
+
+                    Navigator.push(
+                      context,
+
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const SearchCaregiverScreen(),
+                      ),
+                    );
+                  },
+
+                  child: Container(
+
+                    padding: const EdgeInsets.all(10),
+
+                    decoration: BoxDecoration(
+                      color: Colors.pink.withOpacity(0.15),
+
+                      shape: BoxShape.circle,
+                    ),
+
+                    child: const Icon(
+                      Icons.search,
+                      color: Colors.pink,
+                    ),
+                  ),
+                ),
+
                 const Spacer(),
+
                 const Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.end,
+
                   children: [
                     Text(
                       'Hola, Krystina',
+
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
+
                     Text(
                       'Encuentra a tu cuidador ideal',
-                      style: TextStyle(color: Colors.black54, fontSize: 12),
+
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
+
                 const SizedBox(width: 12),
 
-                // Envolvemos el CircleAvatar en un GestureDetector para que también
-                // te redirija a la vista de perfil al hacer clic en él.
                 GestureDetector(
-                  onTap: () => _onItemTapped(3), // El índice 3 es el Perfil
+                  onTap: () => _onItemTapped(3),
+
                   child: CircleAvatar(
                     radius: 25,
-                    backgroundColor: Colors.pink.withOpacity(0.2),
-                    child: const Icon(Icons.person, color: Colors.pink),
+
+                    backgroundColor:
+                        Colors.pink.withOpacity(0.2),
+
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.pink,
+                    ),
                   ),
                 ),
               ],
