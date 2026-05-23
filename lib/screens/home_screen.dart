@@ -15,15 +15,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // ✅ FIX 1: screens definido UNA sola vez fuera del build()
-  // Antes estaba dentro de build(), se recreaba en cada tap
-  late final List<Widget> _screens = [
-    _buildHomeContent(),
-    const Center(child: Text('Pantalla Notificaciones')),
-    const Center(child: Text('Pantalla Agenda')),
-    ProfileScreen(user: widget.user),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -147,8 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: 4,
               itemBuilder: (context, index) {
                 return Container(
+                  width: 110,
                   margin: const EdgeInsets.only(right: 10),
                   child: ElevatedButton(
+                    // ← directo, sin SizedBox
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,
                       foregroundColor: Colors.white,
@@ -185,6 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 return Container(
                   height: 200,
+                  width: 110,
                   margin: const EdgeInsets.only(bottom: 20),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
