@@ -67,27 +67,41 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: [
                 // BOTON BUSCAR
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
+                MouseRegion(
 
-                      MaterialPageRoute(
-                        builder: (_) => const SearchCaregiverScreen(),
+                  cursor: SystemMouseCursors.click,
+
+                  child: GestureDetector(
+
+                    onTap: () {
+
+                      Navigator.push(
+
+                        context,
+
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const SearchCaregiverScreen(),
+                        ),
+                      );
+                    },
+
+                    child: Container(
+
+                      padding: const EdgeInsets.all(10),
+
+                      decoration: BoxDecoration(
+
+                        color: Colors.pink.withOpacity(0.15),
+
+                        shape: BoxShape.circle,
                       ),
-                    );
-                  },
 
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-
-                    decoration: BoxDecoration(
-                      color: Colors.pink.withOpacity(0.15),
-
-                      shape: BoxShape.circle,
+                      child: const Icon(
+                        Icons.search,
+                        color: Colors.pink,
+                      ),
                     ),
-
-                    child: const Icon(Icons.search, color: Colors.pink),
                   ),
                 ),
 
@@ -115,14 +129,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 const SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () => _onItemTapped(3),
-                  child: CircleAvatar(
-                    radius: 25,
+                MouseRegion(
 
-                    backgroundColor: Colors.pink.withOpacity(0.2),
+                  cursor: SystemMouseCursors.click,
 
-                    child: const Icon(Icons.person, color: Colors.pink),
+                  child: GestureDetector(
+                    onTap: () => _onItemTapped(3),
+                    child: CircleAvatar(
+                      radius: 25,
+
+                      backgroundColor: Colors.pink.withOpacity(0.2),
+
+                      child: const Icon(Icons.person, color: Colors.pink),
+                    ),
                   ),
                 ),
               ],

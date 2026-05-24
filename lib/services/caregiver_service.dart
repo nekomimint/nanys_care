@@ -22,6 +22,30 @@ class CaregiverService {
         "Lunes-Mañana",
         "Martes-Tarde",
       ],
+
+     reviews: [
+
+        ReviewModel(
+          comment:
+              "Muy amable con los niños",
+
+          rating: 5,
+        ),
+
+        ReviewModel(
+          comment:
+              "Siempre llega puntual",
+
+          rating: 4.5,
+        ),
+
+        ReviewModel(
+          comment:
+              "Excelente atención",
+
+          rating: 5,
+        ),
+      ],
     ),
 
     CaregiverModel(
@@ -40,6 +64,30 @@ class CaregiverService {
       availability: [
         "Viernes-Noche",
       ],
+
+      reviews: [
+
+        ReviewModel(
+          comment:
+              "Muy amable con los niños",
+
+          rating: 5,
+        ),
+
+        ReviewModel(
+          comment:
+              "Siempre llega puntual",
+
+          rating: 4.5,
+        ),
+
+        ReviewModel(
+          comment:
+              "Excelente atención",
+
+          rating: 5,
+        ),
+      ],
     ),
 
     CaregiverModel(
@@ -57,6 +105,30 @@ class CaregiverService {
 
       availability: [
         "Miércoles-Mañana",
+      ],
+
+      reviews: [
+
+        ReviewModel(
+          comment:
+              "Muy amable con los niños",
+
+          rating: 5,
+        ),
+
+        ReviewModel(
+          comment:
+              "Siempre llega puntual",
+
+          rating: 4.5,
+        ),
+
+        ReviewModel(
+          comment:
+              "Excelente atención",
+
+          rating: 5,
+        ),
       ],
     ),
   ];

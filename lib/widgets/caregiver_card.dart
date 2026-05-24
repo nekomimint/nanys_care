@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../models/caregiver_model.dart';
+import '../screens/caregiver_detail_screen.dart';
+import 'package:flutter/gestures.dart';
 
 class CaregiverCard extends StatelessWidget {
 
@@ -11,102 +12,104 @@ class CaregiverCard extends StatelessWidget {
     required this.caregiver,
   });
 
+  
+
   @override
   Widget build(BuildContext context) {
 
-    return Container(
+    return MouseRegion(
 
-      margin: const EdgeInsets.only(
-        bottom: 15,
-      ),
+      cursor: SystemMouseCursors.click,
 
-      padding: const EdgeInsets.all(16),
+      child: GestureDetector(
 
-      decoration: BoxDecoration(
-        color: Colors.white,
+      onTap: () {
 
-        borderRadius:
-            BorderRadius.circular(20),
+        Navigator.push(
 
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(0.05),
+          context,
 
-            blurRadius: 10,
+          MaterialPageRoute(
 
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-
-      child: Row(
-        children: [
-
-          CircleAvatar(
-            radius: 35,
-
-            backgroundImage:
-                NetworkImage(
-              caregiver.imageUrl,
+            builder: (_) =>
+                CaregiverDetailScreen(
+              caregiver: caregiver,
             ),
           ),
+        );
+      },
 
-          const SizedBox(width: 15),
+      child: Container(
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+        child: Row(
+          children: [
 
-              children: [
+            CircleAvatar(
+              radius: 35,
 
-                Text(
-                  caregiver.name,
+              backgroundImage:
+                  NetworkImage(
+                caregiver.imageUrl,
+              ),
+            ),
 
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight:
-                        FontWeight.bold,
+            const SizedBox(width: 15),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+
+                children: [
+
+                  Text(
+                    caregiver.name,
+
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight:
+                          FontWeight.bold,
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 5),
+                  const SizedBox(height: 5),
 
-                Text(
-                  caregiver.experience,
-                ),
+                  Text(
+                    caregiver.experience,
+                  ),
 
-                const SizedBox(height: 5),
+                  const SizedBox(height: 5),
 
-                Text(
-                  '\$${caregiver.price} por cita',
-                ),
+                  Text(
+                    '\$${caregiver.price} por cita',
+                  ),
 
-                const SizedBox(height: 5),
+                  const SizedBox(height: 5),
 
-                Row(
-                  children: [
+                  Row(
+                    children: [
 
-                    const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 18,
-                    ),
+                      const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 18,
+                      ),
 
-                    const SizedBox(width: 5),
+                      const SizedBox(width: 5),
 
-                    Text(
-                      caregiver.rating
-                          .toString(),
-                    ),
-                  ],
-                ),
-              ],
+                      Text(
+                        caregiver.rating
+                            .toString(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

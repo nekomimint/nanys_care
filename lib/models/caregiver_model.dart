@@ -12,6 +12,8 @@ class CaregiverModel {
 
   final List<String> availability;
 
+  final List<ReviewModel> reviews;
+
   CaregiverModel({
 
     required this.name,
@@ -25,5 +27,21 @@ class CaregiverModel {
     required this.imageUrl,
 
     required this.availability,
+
+    required this.reviews,
+  });
+}
+
+class ReviewModel {
+
+  final String comment;
+
+  final double rating;
+
+  ReviewModel({
+
+    required this.comment,
+
+    required this.rating,
   });
 }
