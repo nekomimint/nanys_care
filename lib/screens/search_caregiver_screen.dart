@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/caregiver_service.dart';
+import '../widgets/caregiver_card.dart';
 
 class SearchCaregiverScreen extends StatefulWidget {
   const SearchCaregiverScreen({super.key});
@@ -293,88 +295,16 @@ class _SearchCaregiverScreenState
               physics:
                   const NeverScrollableScrollPhysics(),
 
-              itemCount: 5,
+              itemCount:
+                CaregiverService.caregivers.length,
 
               itemBuilder: (context, index) {
 
-                return Container(
+                final caregiver =
+                    CaregiverService.caregivers[index];
 
-                  margin:
-                      const EdgeInsets.only(
-                    bottom: 15,
-                  ),
-
-                  padding:
-                      const EdgeInsets.all(16),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-
-                    borderRadius:
-                        BorderRadius.circular(20),
-
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black
-                            .withOpacity(0.05),
-
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-
-                  child: Row(
-                    children: [
-
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor:
-                            Colors.pink.shade100,
-
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      const SizedBox(width: 15),
-
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
-
-                          children: [
-
-                            Text(
-                              'Cuidador ${index + 1}',
-
-                              style: const TextStyle(
-                                fontWeight:
-                                    FontWeight.bold,
-
-                                fontSize: 18,
-                              ),
-                            ),
-
-                            const SizedBox(height: 5),
-
-                            const Text(
-                              '5 años de experiencia',
-                            ),
-
-                            const SizedBox(height: 5),
-
-                            const Text(
-                              '\$250/hora',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                return CaregiverCard(
+                  caregiver: caregiver,
                 );
               },
             ),
