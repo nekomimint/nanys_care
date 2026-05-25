@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: ^1.1.2 
   cached_network_image: ^3.4.1
+  intl: ^0.20.2
   # FireBase dependencies
   firebase_core: ^4.9.0
   firebase_auth: ^6.5.1

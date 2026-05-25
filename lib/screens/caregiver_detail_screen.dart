@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../models/caregiver_model.dart';
+import 'booking_screen.dart';
 
 class CaregiverDetailScreen extends StatelessWidget {
 
@@ -236,7 +236,20 @@ class CaregiverDetailScreen extends StatelessWidget {
                   ),
                 ),
 
-                onPressed: () {},
+                onPressed: () {Navigator.push(
+
+                  context,
+
+                  MaterialPageRoute(
+
+                    builder: (_) =>
+                        BookingScreen(
+                      caregiver: caregiver,
+                    ),
+                  ),
+                );
+                },
+                
 
                 child: const Text(
 
