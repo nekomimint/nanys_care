@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../models/caregiver_model.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class BookingScreen extends StatefulWidget {
 
@@ -18,8 +19,16 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState
     extends State<BookingScreen> {
+  
+  @override
+void initState() {
 
-  String? selectedDay;
+  super.initState();
+
+  initializeDateFormatting('es_ES');
+}
+
+  DateTime? selectedDate;
 
   String? selectedSlot;
 
@@ -74,7 +83,7 @@ class _BookingScreenState
             const SizedBox(height: 30),
 
             const Text(
-              "Selecciona un día",
+              "Selecciona una fecha",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
@@ -83,49 +92,72 @@ class _BookingScreenState
 
             const SizedBox(height: 10),
 
-            DropdownButtonFormField<String>(
+            SizedBox(
 
-              value: selectedDay,
+              width: double.infinity,
 
-              decoration: InputDecoration(
+              child: ElevatedButton.icon(
 
-                filled: true,
+                style: ElevatedButton.styleFrom(
 
-                fillColor: Colors.white,
+                  backgroundColor: Colors.white,
 
-                border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(15),
+                  foregroundColor: Colors.black,
+
+                  padding:
+                      const EdgeInsets.symmetric(
+                    vertical: 18,
+                  ),
+
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(15),
+                  ),
+                ),
+
+                onPressed: () async {
+
+                  final pickedDate =
+                      await showDatePicker(
+
+                    context: context,
+
+                    initialDate: DateTime.now(),
+
+                    firstDate: DateTime.now(),
+
+                    lastDate:
+                        DateTime.now().add(
+                      const Duration(days: 365),
+                    ),
+                  );
+
+                  if (pickedDate != null) {
+
+                    setState(() {
+
+                      selectedDate = pickedDate;
+
+                      selectedSlot = null;
+                    });
+                  }
+                },
+
+                icon: const Icon(
+                  Icons.calendar_month,
+                ),
+
+                label: Text(
+
+                  selectedDate == null
+
+                      ? "Elegir fecha"
+
+                      : DateFormat(
+                          'dd/MM/yyyy',
+                        ).format(selectedDate!),
                 ),
               ),
-
-              items:
-
-                widget.caregiver.availability
-
-                    .map((availability) {
-
-                      final day =
-                          availability.split('-')[0];
-
-                      return DropdownMenuItem(
-
-                        value: day,
-
-                        child: Text(day),
-                      );
-
-                    }).toSet().toList(),
-
-              onChanged: (value) {
-
-                setState(() {
-
-                  selectedDay = value;
-
-                  selectedSlot = null;
-                });
-              },
             ),
 
             const SizedBox(height: 25),
@@ -140,7 +172,7 @@ class _BookingScreenState
 
             const SizedBox(height: 10),
 
-            if (selectedDay != null)
+            if (selectedDate != null)
 
               Wrap(
 
@@ -153,8 +185,18 @@ class _BookingScreenState
 
                         .where((availability) {
 
-                          return availability
-                              .startsWith(selectedDay!);
+                          final selectedDayName =
+
+                            DateFormat(
+                              'EEEE',
+                              'es_ES',
+                            ).format(selectedDate!);
+
+                        return availability
+                            .toLowerCase()
+                            .startsWith(
+                              selectedDayName.toLowerCase(),
+                            );
                         })
 
                         .map((availability) {
@@ -232,7 +274,7 @@ class _BookingScreenState
 
                 onPressed: () {
 
-                  if (selectedDay == null ||
+                  if (selectedDate == null ||
                       selectedSlot == null) {
 
                     ScaffoldMessenger.of(context)
