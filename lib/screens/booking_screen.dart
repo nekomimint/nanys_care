@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/caregiver_model.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class BookingScreen extends StatefulWidget {
 
@@ -29,6 +30,7 @@ void initState() {
 }
 
   DateTime? selectedDate;
+  DateTime focusedDay = DateTime.now();
 
   String? selectedSlot;
 
@@ -92,73 +94,173 @@ void initState() {
 
             const SizedBox(height: 10),
 
-            SizedBox(
+           TableCalendar(
+            
+            availableCalendarFormats: const {
+              CalendarFormat.month: 'Mes',
+            },
 
-              width: double.infinity,
+            firstDay: DateTime.now(),
 
-              child: ElevatedButton.icon(
+            lastDay:
+                DateTime.now().add(
+              const Duration(days: 365),
+            ),
 
-                style: ElevatedButton.styleFrom(
+            focusedDay: focusedDay,
 
-                  backgroundColor: Colors.white,
+            selectedDayPredicate: (day) {
 
-                  foregroundColor: Colors.black,
+              return isSameDay(
+                selectedDate,
+                day,
+              );
+            },
 
-                  padding:
-                      const EdgeInsets.symmetric(
-                    vertical: 18,
-                  ),
+            onDaySelected:
+                (selectedDayValue, focusedDayValue) {
 
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(15),
-                  ),
-                ),
+              final dayName =
 
-                onPressed: () async {
+                  DateFormat(
+                    'EEEE',
+                    'es_ES',
+                  )
 
-                  final pickedDate =
-                      await showDatePicker(
+                  .format(selectedDayValue)
+                  .toLowerCase();
 
-                    context: context,
+              final hasAvailability =
 
-                    initialDate: DateTime.now(),
+                  widget.caregiver.availability
+                      .any((availability) {
 
-                    firstDate: DateTime.now(),
+                return availability
+                    .toLowerCase()
+                    .startsWith(dayName);
+              });
 
-                    lastDate:
-                        DateTime.now().add(
-                      const Duration(days: 365),
+              if (!hasAvailability) {
+
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(
+
+                  const SnackBar(
+
+                    content: Text(
+                      "No hay horarios disponibles este día",
                     ),
-                  );
+                  ),
+                );
 
-                  if (pickedDate != null) {
+                return;
+              }
 
-                    setState(() {
+              setState(() {
 
-                      selectedDate = pickedDate;
+                selectedDate =
+                    selectedDayValue;
 
-                      selectedSlot = null;
-                    });
-                  }
-                },
+                focusedDay =
+                    focusedDayValue;
 
-                icon: const Icon(
-                  Icons.calendar_month,
-                ),
+                selectedSlot = null;
+              });
+            },
 
-                label: Text(
+            calendarStyle: CalendarStyle(
 
-                  selectedDate == null
+              selectedDecoration:
+                  const BoxDecoration(
 
-                      ? "Elegir fecha"
+                color: Color(0xFFAC7099),
 
-                      : DateFormat(
-                          'dd/MM/yyyy',
-                        ).format(selectedDate!),
-                ),
+                shape: BoxShape.circle,
+              ),
+
+              todayDecoration:
+                  BoxDecoration(
+
+                color: Colors.pink.shade200,
+
+                shape: BoxShape.circle,
               ),
             ),
+
+            calendarBuilders:
+                CalendarBuilders(
+
+              defaultBuilder:
+                  (context, day, focusedDay) {
+
+                final dayName =
+
+                    DateFormat(
+                      'EEEE',
+                      'es_ES',
+                    )
+
+                    .format(day)
+                    .toLowerCase();
+
+                final hasAvailability =
+
+                    widget.caregiver.availability
+                        .any((availability) {
+
+                  return availability
+                      .toLowerCase()
+                      .startsWith(dayName);
+                });
+
+                if (!hasAvailability) {
+
+                  return MouseRegion(
+
+                    cursor:
+                        SystemMouseCursors.forbidden,
+
+                    child: Center(
+
+                      child: Text(
+
+                        '${day.day}',
+
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return MouseRegion(
+
+                  cursor: SystemMouseCursors.click,
+
+                  child: Container(
+
+                    margin: const EdgeInsets.all(6),
+
+                    decoration: BoxDecoration(
+
+                      color:
+                          Colors.green.shade100,
+
+                      shape: BoxShape.circle,
+                    ),
+
+                    child: Center(
+
+                      child: Text(
+                        '${day.day}',
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
 
             const SizedBox(height: 25),
 
