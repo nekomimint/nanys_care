@@ -10,7 +10,7 @@ class BookingService {
 ) {
 
     bookings.add(booking);
-
+    //Estos prints son para pruebas, hay que quitarlos al final
     print("RESERVA GUARDADA");
 
     print(booking.caregiverName);
