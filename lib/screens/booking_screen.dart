@@ -3,6 +3,8 @@ import '../models/caregiver_model.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../models/booking_model.dart';
+import '../services/booking_service.dart';
 
 class BookingScreen extends StatefulWidget {
 
@@ -56,12 +58,15 @@ void initState() {
         foregroundColor: Colors.white,
       ),
 
-      body: Padding(
+      body: SafeArea(
 
-        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
 
-        child: Column(
-          crossAxisAlignment:
+          padding: const EdgeInsets.all(20),
+
+          child: Column(
+
+            crossAxisAlignment:
               CrossAxisAlignment.start,
 
           children: [
@@ -353,7 +358,7 @@ void initState() {
               ),
             ),
 
-            const Spacer(),
+            const SizedBox(height: 30),
 
             SizedBox(
 
@@ -392,6 +397,25 @@ void initState() {
                     return;
                   }
 
+                  final booking = BookingModel(
+
+                    caregiverName:
+                        widget.caregiver.name,
+
+                    date: selectedDate!,
+
+                    timeSlot: selectedSlot!,
+
+                    notes:
+                        notesController.text,
+
+                    status: "Pendiente",
+                  );
+
+                  BookingService.addBooking(
+                    booking,
+                  );
+
                   ScaffoldMessenger.of(context)
                       .showSnackBar(
 
@@ -413,6 +437,7 @@ void initState() {
           ],
         ),
       ),
+    ),
     );
   }
 }
