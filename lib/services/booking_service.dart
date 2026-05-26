@@ -1,16 +1,32 @@
 //Simulador de firebase
-//También simula cuando se envía una solicitud de cita al cuidador y este la rechaza o acepta
+//También simula cuando se envía una solicitud de cita al cuidador, pero no sale en la pantalla del cuidador
 import '../models/booking_model.dart';
 
 class BookingService {
 
-  static List<BookingModel> bookings = [];
+  static List<BookingModel> bookings = [
+
+    //Solicitud fake para hacer pruebas
+    BookingModel(
+      caregiverName: "María López",
+      tutorName: "Krystina",
+      date: DateTime.now(),
+      timeSlot: "Mañana",
+      notes: "Mi hijo es alérgico al cacahuate",
+      status: "Pendiente",
+    ),
+  ];
 
   static void addBooking(
     BookingModel booking,
   ) {
 
     bookings.add(booking);
+
+    // pruebas
+    print(bookings.length);
+    print(booking.tutorName);
+    print(booking.timeSlot);
   }
 
   static void updateBookingStatus(
@@ -19,29 +35,5 @@ class BookingService {
   ) {
 
     booking.status = newStatus;
-
-    {
-
-      bookings.add(booking);
-      //Estos prints son para pruebas, hay que quitarlos al final
-      print("RESERVA GUARDADA");
-
-      print(booking.caregiverName);
-
-      print(booking.date);
-
-      print(booking.timeSlot);
-
-      print(booking.notes);
-
-      print("----------------");
-
-      print(
-        "TOTAL RESERVAS: ${bookings.length}",
-      );
-    }
   }
-
-  
 }
-

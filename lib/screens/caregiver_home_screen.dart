@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../services/booking_service.dart';
-import '../services/booking_service.dart';
 import '../models/booking_model.dart';
 import 'package:intl/intl.dart';
+import 'booking_request_screen.dart';
+import 'agenda_screen.dart';
 
 class CaregiverHomeScreen extends StatefulWidget {
 
@@ -44,11 +45,7 @@ class _CaregiverHomeScreenState
         ),
       ),
 
-      const Center(
-        child: Text(
-          'Agenda',
-        ),
-      ),
+      const AgendaScreen(),
 
       const Center(
         child: Text(
@@ -109,6 +106,12 @@ class _CaregiverHomeScreenState
   }
 
   Widget _buildHomeContent() {
+
+    final pendingBookings =
+        BookingService.bookings
+            .where((booking) =>
+                booking.status == 'Pendiente')
+            .toList();
 
     return SafeArea(
 
@@ -198,156 +201,138 @@ class _CaregiverHomeScreenState
 
           Expanded(
 
-            child: ListView.builder(
+            child: pendingBookings.isEmpty
 
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
+                ? const Center(
 
-              itemCount:
-                  BookingService.bookings.length,
+                    child: Text(
+                      'No hay solicitudes todavía',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
 
-              itemBuilder: (context, index) {
+                : ListView.builder(
 
-                final booking =
-                    BookingService.bookings[index];
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                    ),
 
-                return Container(
+                    itemCount: pendingBookings.length,
 
-                  margin: const EdgeInsets.only(
-                    bottom: 20,
-                  ),
+                    itemBuilder: (context, index) {
 
-                  padding: const EdgeInsets.all(16),
+                      final booking =
+                        pendingBookings[index];
 
-                  decoration: BoxDecoration(
+                    
 
-                    color: Colors.white,
+                      return MouseRegion(
 
-                    borderRadius:
-                        BorderRadius.circular(20),
+                      cursor: SystemMouseCursors.click,
 
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            Colors.black.withOpacity(0.05),
+                      child: GestureDetector(
 
-                        blurRadius: 10,
+                        onTap: () async {
 
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
+                          await Navigator.push(
 
-                  child: Column(
+                            context,
 
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                            MaterialPageRoute(
 
-                    children: [
-
-                      Text(
-
-                        booking.tutorName,
-
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Text(
-                        'Fecha: ${DateFormat('dd/MM/yyyy').format(booking.date)}',
-                      ),
-
-                      Text(
-                        'Horario: ${booking.timeSlot}',
-                      ),
-
-                      Text(
-                        'Estado: ${booking.status}',
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      if (booking.notes.isNotEmpty)
-
-                        Text(
-                          'Notas: ${booking.notes}',
-                        ),
-
-                      const SizedBox(height: 20),
-
-                      Row(
-
-                        children: [
-
-                          Expanded(
-
-                            child: ElevatedButton(
-
-                              style:
-                                  ElevatedButton.styleFrom(
-
-                                backgroundColor:
-                                    Colors.green,
-                              ),
-
-                              onPressed: () {
-
-                                BookingService
-                                    .updateBookingStatus(
-                                  booking,
-                                  "Aceptada",
-                                );
-
-                                setState(() {});
-                              },
-
-                              child: const Text(
-                                "Aceptar",
+                              builder: (_) => BookingRequestScreen(
+                                booking: booking,
                               ),
                             ),
+                          );
+
+                          setState(() {});
+                        },
+
+                        child: Container(
+
+                          margin: const EdgeInsets.only(
+                            bottom: 20,
                           ),
 
-                          const SizedBox(width: 10),
+                          padding: const EdgeInsets.all(16),
 
-                          Expanded(
+                          decoration: BoxDecoration(
 
-                            child: ElevatedButton(
+                            color: Colors.white,
 
-                              style:
-                                  ElevatedButton.styleFrom(
+                            borderRadius:
+                                BorderRadius.circular(20),
 
-                                backgroundColor:
-                                    Colors.red,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black
+                                    .withOpacity(0.05),
+
+                                blurRadius: 10,
+
+                                offset: const Offset(0, 5),
                               ),
-
-                              onPressed: () {
-
-                                BookingService
-                                    .updateBookingStatus(
-                                  booking,
-                                  "Rechazada",
-                                );
-
-                                setState(() {});
-                              },
-
-                              child: const Text(
-                                "Rechazar",
-                              ),
-                            ),
+                            ],
                           ),
-                        ],
+
+                          child: Column(
+
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+
+                            children: [
+
+                              Text(
+
+                                booking.tutorName,
+
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              Text(
+                                'Fecha: ${DateFormat('dd/MM/yyyy').format(booking.date)}',
+                              ),
+
+                              Text(
+                                'Horario: ${booking.timeSlot}',
+                              ),
+
+                              Text(
+                                'Estado: ${booking.status}',
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              if (booking.notes.isNotEmpty)
+
+                                Text(
+                                  'Notas: ${booking.notes}',
+                                ),
+
+                              const SizedBox(height: 8),
+
+                              const Text(
+
+                                'Click para revisar solicitud',
+
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ],
+                    );
+                    },
                   ),
-                );
-              },
-            ),
           )
         ],
       ),
