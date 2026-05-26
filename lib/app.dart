@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/caregiver_home_screen.dart';
 import './models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
               },
             );
           }
-          return const LoginScreen();
+          return const CaregiverHomeScreen();//Cambiar este para probar la pantalla home que quieras (Antes estaba loginscreen)
         },
       ),
     );
