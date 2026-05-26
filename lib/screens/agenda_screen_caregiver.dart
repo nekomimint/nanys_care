@@ -21,10 +21,23 @@ class _AgendaScreenState
   Widget build(BuildContext context) {
 
     final acceptedBookings =
-        BookingService.bookings
-            .where((booking) =>
-                booking.status == 'Aceptada')
-            .toList();
+      BookingService.bookings
+
+          .where((booking) {
+
+            return booking.status == 'Aceptada' &&
+                booking.date.isAfter(
+                  DateTime.now().subtract(
+                    const Duration(days: 1),
+                  ),
+                );
+          })
+
+          .toList()
+
+        ..sort(
+          (a, b) => a.date.compareTo(b.date),
+        );
 
     return Scaffold(
 
@@ -116,15 +129,57 @@ class _AgendaScreenState
                           const SizedBox(height: 10),
 
                           Text(
-                            'Fecha: ${DateFormat('dd/MM/yyyy').format(booking.date)}',
+                            'Fecha: ${DateFormat('EEEE d MMMM','es_ES',).format(booking.date)}',
                           ),
 
                           Text(
                             'Horario: ${booking.timeSlot}',
                           ),
 
-                          Text(
-                            'Estado: ${booking.status}',
+                          Container(
+
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+
+                            decoration: BoxDecoration(
+
+                              color:
+                                  booking.status == 'Aceptada'
+
+                                      ? Colors.green.shade100
+
+                                      : booking.status == 'Pendiente'
+
+                                          ? Colors.orange.shade100
+
+                                          : Colors.red.shade100,
+
+                              borderRadius:
+                                  BorderRadius.circular(20),
+                            ),
+
+                            child: Text(
+
+                              booking.status,
+
+                              style: TextStyle(
+
+                                fontWeight: FontWeight.bold,
+
+                                color:
+                                    booking.status == 'Aceptada'
+
+                                        ? Colors.green
+
+                                        : booking.status == 'Pendiente'
+
+                                            ? Colors.orange
+
+                                            : Colors.red,
+                              ),
+                            ),
                           ),
 
                           const SizedBox(height: 8),

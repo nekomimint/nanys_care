@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
               },
             );
           }
-          return const CaregiverHomeScreen();//Cambiar este para probar la pantalla home que quieras (Antes estaba loginscreen)
+          return const LoginScreen();//Cambiar este para probar la pantalla home que quieras (Antes estaba loginscreen)
         },
       ),
     );
