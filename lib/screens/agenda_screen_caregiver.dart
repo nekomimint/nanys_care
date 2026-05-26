@@ -4,6 +4,7 @@ import '../models/booking_model.dart';
 import 'package:intl/intl.dart';
 import 'booking_request_screen.dart';
 
+//Las cards que salen en esta pantalla son placeholder, luego las quitamos al conectar con la base de datos
 class AgendaScreen extends StatefulWidget {
 
   const AgendaScreen({super.key});
@@ -51,7 +52,7 @@ class _AgendaScreenState
                 final booking =
                     acceptedBookings[index];
 
-                MouseRegion(
+                return MouseRegion(
 
                   cursor: SystemMouseCursors.click,
 
