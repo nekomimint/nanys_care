@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/google/create_user_route_screen.dart'; // ← import correcto
-import 'screens/home_screen.dart';
-import 'screens/caregiver_home_screen.dart';
+import 'screens/home/home_screen.dart';
 import './models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

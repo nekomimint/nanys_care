@@ -10,12 +10,8 @@ class CaregiverProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-          const SizedBox(width: 12),
-          Text(user.name),
-          Text("Esto es de cuidadores"),
+      child: Row(children: [
+          
         ],
       ),
     );

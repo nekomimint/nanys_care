@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
-import '../services/caregiver_service.dart';
-import '../widgets/caregiver_card.dart';
+import '../../../services/caregiver_service.dart';
+import '../../../widgets/caregiver_card.dart';
 
 class SearchCaregiverScreen extends StatefulWidget {
   const SearchCaregiverScreen({super.key});
 
   @override
-  State<SearchCaregiverScreen> createState() =>
-      _SearchCaregiverScreenState();
+  State<SearchCaregiverScreen> createState() => _SearchCaregiverScreenState();
 }
 
-class _SearchCaregiverScreenState
-    extends State<SearchCaregiverScreen> {
-
-  RangeValues priceRange =
-      const RangeValues(100, 500);
+class _SearchCaregiverScreenState extends State<SearchCaregiverScreen> {
+  RangeValues priceRange = const RangeValues(100, 500);
 
   final List<String> selectedAvailability = [];
 
-  final List<String> timeSlots = [
-    'Mañana',
-    'Mediodía',
-    'Tarde',
-    'Noche',
-  ];
+  final List<String> timeSlots = ['Mañana', 'Mediodía', 'Tarde', 'Noche'];
 
   final List<String> days = [
-
     'Lunes',
     'Martes',
     'Miércoles',
@@ -37,9 +27,7 @@ class _SearchCaregiverScreenState
   ];
 
   void toggleAvailability(String slot) {
-
     setState(() {
-
       if (selectedAvailability.contains(slot)) {
         selectedAvailability.remove(slot);
       } else {
@@ -50,9 +38,7 @@ class _SearchCaregiverScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       backgroundColor: const Color(0xFFF4F9F8),
 
       appBar: AppBar(
@@ -62,54 +48,36 @@ class _SearchCaregiverScreenState
       ),
 
       body: SingleChildScrollView(
-
         padding: const EdgeInsets.all(16),
 
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-
             // EXPERIENCIA
             const Text(
               "Experiencia mínima",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
 
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
 
                 border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(15),
                 ),
               ),
 
               items: const [
+                DropdownMenuItem(value: "1", child: Text("1+ años")),
 
-                DropdownMenuItem(
-                  value: "1",
-                  child: Text("1+ años"),
-                ),
+                DropdownMenuItem(value: "3", child: Text("3+ años")),
 
-                DropdownMenuItem(
-                  value: "3",
-                  child: Text("3+ años"),
-                ),
-
-                DropdownMenuItem(
-                  value: "5",
-                  child: Text("5+ años"),
-                ),
+                DropdownMenuItem(value: "5", child: Text("5+ años")),
               ],
 
               onChanged: (value) {},
@@ -120,18 +88,13 @@ class _SearchCaregiverScreenState
             // PRECIO
             const Text(
               "Rango de precio",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
 
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
-
                 Text(
                   '\$${priceRange.start.round()}',
                   style: const TextStyle(
@@ -163,7 +126,6 @@ class _SearchCaregiverScreenState
               ),
 
               onChanged: (values) {
-
                 setState(() {
                   priceRange = values;
                 });
@@ -174,35 +136,26 @@ class _SearchCaregiverScreenState
 
             const Text(
               "Disponibilidad",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
 
             const SizedBox(height: 10),
 
             Column(
               children: days.map((day) {
-
                 return Container(
-
-                  margin: const EdgeInsets.only(
-                    bottom: 15,
-                  ),
+                  margin: const EdgeInsets.only(bottom: 15),
 
                   padding: const EdgeInsets.all(15),
 
                   decoration: BoxDecoration(
                     color: Colors.white,
 
-                    borderRadius:
-                        BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(15),
 
                     boxShadow: [
                       BoxShadow(
-                        color:
-                            Colors.black.withOpacity(0.03),
+                        color: Colors.black.withOpacity(0.03),
 
                         blurRadius: 8,
 
@@ -212,11 +165,9 @@ class _SearchCaregiverScreenState
                   ),
 
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
-
                       Text(
                         day,
 
@@ -232,38 +183,24 @@ class _SearchCaregiverScreenState
                         spacing: 10,
                         runSpacing: 10,
 
-                        children:
-                            timeSlots.map((slot) {
+                        children: timeSlots.map((slot) {
+                          final key = '$day-$slot';
 
-                          final key =
-                              '$day-$slot';
-
-                          final isSelected =
-                              selectedAvailability
-                                  .contains(key);
+                          final isSelected = selectedAvailability.contains(key);
 
                           return FilterChip(
-
                             label: Text(slot),
 
                             selected: isSelected,
 
-                            selectedColor:
-                                const Color(0xFFAC7099),
+                            selectedColor: const Color(0xFFAC7099),
 
                             onSelected: (_) {
-
                               setState(() {
-
                                 if (isSelected) {
-
-                                  selectedAvailability
-                                      .remove(key);
-
+                                  selectedAvailability.remove(key);
                                 } else {
-
-                                  selectedAvailability
-                                      .add(key);
+                                  selectedAvailability.add(key);
                                 }
                               });
                             },
@@ -280,32 +217,22 @@ class _SearchCaregiverScreenState
 
             const Text(
               "Cuidadores disponibles",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
 
             const SizedBox(height: 15),
 
             ListView.builder(
-
               shrinkWrap: true,
 
-              physics:
-                  const NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
 
-              itemCount:
-                CaregiverService.caregivers.length,
+              itemCount: CaregiverService.caregivers.length,
 
               itemBuilder: (context, index) {
+                final caregiver = CaregiverService.caregivers[index];
 
-                final caregiver =
-                    CaregiverService.caregivers[index];
-
-                return CaregiverCard(
-                  caregiver: caregiver,
-                );
+                return CaregiverCard(caregiver: caregiver);
               },
             ),
           ],

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../models/caregiver_model.dart';
-import 'booking_screen.dart';
+import '../../../models/caregiver_model.dart';
+import '../../booking/booking_screen.dart';
 
 class CaregiverListScreen extends StatelessWidget {
   const CaregiverListScreen({super.key});
@@ -46,32 +46,6 @@ class CaregiverListScreen extends StatelessWidget {
 
             itemBuilder: (context, index) {
               final caregiver = caregivers[index];
-
-              return Card(
-                margin: const EdgeInsets.all(10),
-
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(caregiver.imageUrl),
-                  ),
-
-                  title: Text(caregiver.name),
-
-                  subtitle: Text('\$${caregiver.price}'),
-
-                  trailing: const Icon(Icons.arrow_forward_ios),
-
-                  onTap: () {
-                    Navigator.push(
-                      context,
-
-                      MaterialPageRoute(
-                        builder: (_) => BookingScreen(caregiver: caregiver),
-                      ),
-                    );
-                  },
-                ),
-              );
             },
           );
         },

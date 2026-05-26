@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 import '../../../models/user_model.dart';
-import '../../home_screen.dart';
+import '../../home/home_screen.dart';
 
 class ParentRegisterScreen extends StatefulWidget {
   const ParentRegisterScreen({super.key});

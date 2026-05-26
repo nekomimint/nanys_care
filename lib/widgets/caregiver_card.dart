@@ -1,115 +1,80 @@
 import 'package:flutter/material.dart';
 import '../models/caregiver_model.dart';
-import '../screens/caregiver_detail_screen.dart';
+import '../screens/home/caregiver/caregiver_detail_screen.dart';
 import 'package:flutter/gestures.dart';
 
 class CaregiverCard extends StatelessWidget {
-
   final CaregiverModel caregiver;
 
-  const CaregiverCard({
-    super.key,
-    required this.caregiver,
-  });
-
-  
+  const CaregiverCard({super.key, required this.caregiver});
 
   @override
   Widget build(BuildContext context) {
-
     return MouseRegion(
-
       cursor: SystemMouseCursors.click,
 
       child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
 
-      onTap: () {
-
-        Navigator.push(
-
-          context,
-
-          MaterialPageRoute(
-
-            builder: (_) =>
-                CaregiverDetailScreen(
-              caregiver: caregiver,
+            MaterialPageRoute(
+              builder: (_) => CaregiverDetailScreen(caregiver: caregiver),
             ),
-          ),
-        );
-      },
+          );
+        },
 
-      child: Container(
+        child: Container(
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 35,
 
-        child: Row(
-          children: [
-
-            CircleAvatar(
-              radius: 35,
-
-              backgroundImage:
-                  NetworkImage(
-                caregiver.imageUrl,
+                backgroundImage: NetworkImage(caregiver.imageUrl),
               ),
-            ),
 
-            const SizedBox(width: 15),
+              const SizedBox(width: 15),
 
-            Expanded(
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
-                children: [
+                  children: [
+                    Text(
+                      caregiver.name,
 
-                  Text(
-                    caregiver.name,
-
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight:
-                          FontWeight.bold,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 5),
+                    const SizedBox(height: 5),
 
-                  Text(
-                    caregiver.experience,
-                  ),
+                    Text(caregiver.experience),
 
-                  const SizedBox(height: 5),
+                    const SizedBox(height: 5),
 
-                  Text(
-                    '\$${caregiver.price} por cita',
-                  ),
+                    Text('\$${caregiver.price} por cita'),
 
-                  const SizedBox(height: 5),
+                    const SizedBox(height: 5),
 
-                  Row(
-                    children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.amber, size: 18),
 
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 18,
-                      ),
+                        const SizedBox(width: 5),
 
-                      const SizedBox(width: 5),
-
-                      Text(
-                        caregiver.rating
-                            .toString(),
-                      ),
-                    ],
-                  ),
-                ],
+                        Text(caregiver.rating.toString()),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

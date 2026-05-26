@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../models/user_model.dart';
-import '../../home_screen.dart';
+import '../../home/home_screen.dart';
 
 class ParentGoogleRegisterScreen extends StatefulWidget {
   final UserModel user;

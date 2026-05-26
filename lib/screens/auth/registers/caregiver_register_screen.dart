@@ -9,7 +9,7 @@ import '../../../services/storage_service.dart';
 
 import '../../../models/user_model.dart';
 
-import '../../home_screen.dart';
+import '../../home/home_screen.dart';
 
 class CaregiverRegisterScreen extends StatefulWidget {
   const CaregiverRegisterScreen({super.key});

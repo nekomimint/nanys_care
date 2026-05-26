@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import './profile/profile_screen.dart';
-import 'search_caregiver_screen.dart';
-import '../models/user_model.dart';
+import '../profile/profile_screen.dart';
+import 'caregiver/search_caregiver_screen.dart';
+import '../../models/user_model.dart';
+import '../../widgets/search_button.dart';
+import '../../widgets/greetin_header.dart';
+import '../agenda/agenda_screen.dart';
+import '../../widgets/bottom_nav_bar.dart';
+import '../../widgets/screens_by_role_.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user; // ← campo
@@ -24,33 +29,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     const primaryPurple = Color(0xFFAC7099);
+    print('ROL DEL USUARIO: ${widget.user.role}'); // ← esto
 
-    final screens = [
-      _buildHomeContent(),
-      const Center(child: Text('Pantalla Notificaciones')),
-      const Center(child: Text('Pantalla Agenda')),
-      ProfileScreen(user: widget.user),
-    ];
-
+    final screens = ScreensByRole.get(
+      user: widget.user,
+      homeContent: _buildHomeContent(),
+    );
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: AppBottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: primaryPurple,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notis',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Agenda',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        ],
+        role: widget.user.role,
       ),
       body: IndexedStack(index: _selectedIndex, children: screens),
     );
@@ -65,107 +54,32 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween, // ← separa los hijos
               children: [
-                // BOTON BUSCAR
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-
-                        MaterialPageRoute(
-                          builder: (_) => const SearchCaregiverScreen(),
-                        ),
-                      );
-                    },
-
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-
-                      decoration: BoxDecoration(
-                        color: Colors.pink.withOpacity(0.15),
-
-                        shape: BoxShape.circle,
-                      ),
-
-                      child: const Icon(Icons.search, color: Colors.pink),
-                    ),
-                  ),
-                ),
-
-                const Spacer(),
-
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-
-                  children: [
-                    Text(
-                      'Hola, Krystina',
-
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                //* Logica de si es cuidador o no, porque el cuidador no va a buscar otros cuidadores
+                if (widget.user.role == 'parent')
+                  SearchButton(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SearchCaregiverScreen(),
                       ),
                     ),
-
-                    Text(
-                      'Encuentra a tu cuidador ideal',
-
-                      style: TextStyle(color: Colors.black54, fontSize: 12),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(width: 12),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-
-                  child: GestureDetector(
-                    onTap: () => _onItemTapped(3),
-                    child: CircleAvatar(
-                      radius: 25,
-
-                      backgroundColor: Colors.pink.withOpacity(0.2),
-
-                      child: const Icon(Icons.person, color: Colors.pink),
-                    ),
                   ),
+                // ← sin Spacer
+                GreetingHeader(
+                  // ← sin Flexible
+                  name: widget.user.name,
+                  photoUrl: widget.user.photoUrl,
+                  onPhotoTap: () => _onItemTapped(3),
                 ),
               ],
             ),
           ),
+          Text(widget.user.role),
 
           // FILTROS
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: 110,
-                  margin: const EdgeInsets.only(right: 10),
-                  child: ElevatedButton(
-                    // ← directo, sin SizedBox
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      foregroundColor: Colors.white,
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text('Filtro ${index + 1}'),
-                  ),
-                );
-              },
-            ),
-          ),
-
           const Padding(
             padding: EdgeInsets.only(left: 20, top: 25, bottom: 10),
             child: Text(
@@ -174,11 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // ✅ FIX 3: CachedNetworkImage en lugar de NetworkImage
-          // Antes: descargaba la imagen en CADA rebuild, sin caché
-          // Ahora: descarga una vez, guarda en caché, muestra placeholder
-          // ✅ FIX 4: URL de picsum.photos en lugar de source.unsplash.com
-          // Antes: endpoint deprecado que causaba reintentos en bucle
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20),

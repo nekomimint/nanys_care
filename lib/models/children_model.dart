@@ -1,11 +1,11 @@
 // models/user_model.dart
-class UserModel {
+class ChildrenModel {
   final String uidFather;
   final String name;
   final int age;
   final String description;
 
-  const UserModel({
+  const ChildrenModel({
     required this.uidFather,
     required this.name,
     required this.age,
@@ -13,12 +13,12 @@ class UserModel {
   });
 
   // Convierte el documento de Firestore a UserModel
-  factory UserModel.fromFirestore(Map<String, dynamic> data) {
-    return UserModel(
+  factory ChildrenModel.fromFirestore(Map<String, dynamic> data) {
+    return ChildrenModel(
       uidFather: data['uid_father'] ?? '',
       name: data['name'] ?? '',
       age: data['age'] ?? 1,
-      description: data['role'] ?? 'Nada',
+      description: data['description'] ?? 'Nada',
     );
   }
 }

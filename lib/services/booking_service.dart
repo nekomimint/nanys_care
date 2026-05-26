@@ -1,83 +1,41 @@
-//Simulador de firebase
-//También simula cuando se envía una solicitud de cita al cuidador, pero no sale en la pantalla del cuidador
-//Simulador de firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/booking_model.dart';
 
 class BookingService {
+  static Future<void> createBooking({
+    required String caregiverUid,
+    required String tutorUid,
+    required String tutorName,
+    required DateTime date,
+    required String timeSlot,
+    String notes = '',
+    List<String> childrenUids = const [],
+  }) async {
+    // 1. Traer datos del caregiver desde users
+    final caregiverDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(caregiverUid)
+        .get();
 
-  static List<BookingModel> bookings = [
+    final caregiverData = caregiverDoc.data()!;
+    final caregiverName = caregiverData['name'] ?? '';
+    final caregiverPhoto =
+        caregiverData['photo_url'] ??
+        ''; // ajusta el campo a como lo tengas en Firestore
 
-    BookingModel(
-
-      caregiverName: "María López",
-
-      tutorName: "Krystina",
-
-      date: DateTime.now().add(
-        const Duration(days: 1),
-      ),
-
-      timeSlot: "Mañana",
-
-      notes:
-          "Mi hijo es alérgico al cacahuate",
-
-      status: "Aceptada",
-    ),
-
-    BookingModel(
-
-      caregiverName: "Ana Torres",
-
-      tutorName: "Carlos",
-
-      date: DateTime.now().add(
-        const Duration(days: 3),
-      ),
-
-      timeSlot: "Tarde",
-
-      notes:
-          "Necesita ayuda con tareas",
-
-      status: "Aceptada",
-    ),
-
-    BookingModel(
-
-      caregiverName: "Fernanda Ruiz",
-
-      tutorName: "Laura",
-
-      date: DateTime.now().add(
-        const Duration(days: 5),
-      ),
-
-      timeSlot: "Noche",
-
-      notes:
-          "Dormir temprano",
-
-      status: "Pendiente",
-    ),
-  ];
-
-  static void addBooking(
-    BookingModel booking,
-  ) {
-
-    bookings.add(booking);
-
-    print(bookings.length);
-    print(booking.tutorName);
-    print(booking.timeSlot);
-  }
-
-  static void updateBookingStatus(
-    BookingModel booking,
-    String newStatus,
-  ) {
-
-    booking.status = newStatus;
+    // 2. Crear el documento con todo resuelto
+    final ref = FirebaseFirestore.instance.collection('bookings').doc();
+    await ref.set({
+      'caregiver_uid': caregiverUid,
+      'caregiver_name': caregiverName,
+      'caregiver_photo': caregiverPhoto, // URL directa de Storage
+      'tutor_uid': tutorUid,
+      'tutor_name': tutorName,
+      'date': date,
+      'time_slot': timeSlot,
+      'notes': notes,
+      'status': 'pendiente',
+      'children_uids': childrenUids,
+    });
   }
 }

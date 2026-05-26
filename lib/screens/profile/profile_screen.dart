@@ -10,6 +10,7 @@ import './caregiver/caregiver_profile.dart';
 import './parent/parent_profile.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../widgets/greetin_header.dart';
 
 class ProfileScreen extends StatefulWidget {
   final UserModel user;
@@ -58,51 +59,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 15, 134, 57),
-              ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end, // ← separa los hijos
                 children: [
-                  GestureDetector(
-                    onTap: _cambiarFoto,
-                    child: CircleAvatar(
-                      radius: 35,
-                      backgroundImage:
-                          _photoUrl
-                              .isNotEmpty // ← _photoUrl con guión bajo
-                          ? NetworkImage(_photoUrl)
-                          : null,
-                      child: _photoUrl.isEmpty
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          switch (widget.user.role) {
-                            'admin' => 'Admin: ${widget.user.name}',
-                            'caregiver' => 'Cuidador: ${widget.user.name}',
-                            _ => 'Tutor: ${widget.user.name}',
-                          },
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          widget.user.email,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
+                  // En home_screen.dart o donde uses GreetingHeader
+                  GreetingHeader(
+                    name: widget.user.name, // ← solo el nombre, sin rol
+                    photoUrl: widget.user.photoUrl,
+                    onPhotoTap: () => _cambiarFoto,
                   ),
                 ],
               ),
