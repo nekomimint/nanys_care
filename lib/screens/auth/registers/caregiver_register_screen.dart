@@ -21,7 +21,7 @@ class CaregiverRegisterScreen extends StatefulWidget {
 
 class _CaregiverRegisterScreenState extends State<CaregiverRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  String? _experienciaSeleccionada;
   // UserModel fields
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -105,7 +105,7 @@ class _CaregiverRegisterScreenState extends State<CaregiverRegisterScreen> {
       await FirebaseFirestore.instance.collection('caregivers').doc(uid).set({
         'uid': uid,
         'name': _nameController.text.trim(),
-        'experience': _experienceController.text.trim(),
+        'experience': _experienciaSeleccionada ?? '',
         'price': int.tryParse(_priceController.text.trim()) ?? 0,
         'rating': 0.0, // empieza en 0
         'availability': [], // se llena después
@@ -238,10 +238,18 @@ class _CaregiverRegisterScreenState extends State<CaregiverRegisterScreen> {
               const SizedBox(height: 16),
               Text("Experiencia:", style: TextStyle(fontSize: 16)),
               const SizedBox(height: 8),
-              TextFormField(
-                controller: _experienceController,
-                validator: _validator,
-                decoration: const InputDecoration(hintText: 'Escribe aqui...'),
+              DropdownButtonFormField<String>(
+                value: _experienciaSeleccionada,
+                validator: (v) =>
+                    v == null ? 'Selecciona tu experiencia' : null,
+                decoration: const InputDecoration(hintText: 'Selecciona...'),
+                items: const [
+                  DropdownMenuItem(value: '1+ años', child: Text('1+ años')),
+                  DropdownMenuItem(value: '3+ años', child: Text('3+ años')),
+                  DropdownMenuItem(value: '5+ años', child: Text('5+ años')),
+                ],
+                onChanged: (value) =>
+                    setState(() => _experienciaSeleccionada = value),
               ),
               const SizedBox(height: 16),
               Text("Precio / Hora:", style: TextStyle(fontSize: 16)),
