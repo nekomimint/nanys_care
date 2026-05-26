@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/booking_service.dart';
+import '../services/booking_service.dart';
+import '../models/booking_model.dart';
+import 'package:intl/intl.dart';
 
 class CaregiverHomeScreen extends StatefulWidget {
 
@@ -195,127 +198,157 @@ class _CaregiverHomeScreenState
 
           Expanded(
 
-            child:
-                BookingService
-                        .bookings
-                        .isEmpty
+            child: ListView.builder(
 
-                    ? const Center(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
 
-                        child: Text(
-                          'No hay solicitudes aún',
+              itemCount:
+                  BookingService.bookings.length,
+
+              itemBuilder: (context, index) {
+
+                final booking =
+                    BookingService.bookings[index];
+
+                return Container(
+
+                  margin: const EdgeInsets.only(
+                    bottom: 20,
+                  ),
+
+                  padding: const EdgeInsets.all(16),
+
+                  decoration: BoxDecoration(
+
+                    color: Colors.white,
+
+                    borderRadius:
+                        BorderRadius.circular(20),
+
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            Colors.black.withOpacity(0.05),
+
+                        blurRadius: 10,
+
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+
+                  child: Column(
+
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                    children: [
+
+                      Text(
+
+                        booking.tutorName,
+
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                      )
+                      ),
 
-                    : ListView.builder(
+                      const SizedBox(height: 10),
 
-                        padding:
-                            const EdgeInsets.symmetric(
-                          horizontal: 20,
+                      Text(
+                        'Fecha: ${DateFormat('dd/MM/yyyy').format(booking.date)}',
+                      ),
+
+                      Text(
+                        'Horario: ${booking.timeSlot}',
+                      ),
+
+                      Text(
+                        'Estado: ${booking.status}',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      if (booking.notes.isNotEmpty)
+
+                        Text(
+                          'Notas: ${booking.notes}',
                         ),
 
-                        itemCount:
-                            BookingService
-                                .bookings
-                                .length,
+                      const SizedBox(height: 20),
 
-                        itemBuilder:
-                            (context, index) {
+                      Row(
 
-                          final booking =
+                        children: [
 
-                              BookingService
-                                  .bookings[index];
+                          Expanded(
 
-                          return Container(
+                            child: ElevatedButton(
 
-                            margin:
-                                const EdgeInsets.only(
-                              bottom: 15,
-                            ),
+                              style:
+                                  ElevatedButton.styleFrom(
 
-                            padding:
-                                const EdgeInsets.all(16),
-
-                            decoration:
-                                BoxDecoration(
-
-                              color: Colors.white,
-
-                              borderRadius:
-                                  BorderRadius.circular(
-                                20,
+                                backgroundColor:
+                                    Colors.green,
                               ),
 
-                              boxShadow: [
+                              onPressed: () {
 
-                                BoxShadow(
+                                BookingService
+                                    .updateBookingStatus(
+                                  booking,
+                                  "Aceptada",
+                                );
 
-                                  color: Colors.black
-                                      .withOpacity(0.05),
+                                setState(() {});
+                              },
 
-                                  blurRadius: 10,
-
-                                  offset:
-                                      const Offset(
-                                    0,
-                                    5,
-                                  ),
-                                ),
-                              ],
+                              child: const Text(
+                                "Aceptar",
+                              ),
                             ),
+                          ),
 
-                            child: Column(
+                          const SizedBox(width: 10),
 
-                              crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .start,
+                          Expanded(
 
-                              children: [
+                            child: ElevatedButton(
 
-                                Text(
+                              style:
+                                  ElevatedButton.styleFrom(
 
-                                  booking.caregiverName,
+                                backgroundColor:
+                                    Colors.red,
+                              ),
 
-                                  style:
-                                      const TextStyle(
+                              onPressed: () {
 
-                                    fontSize: 18,
+                                BookingService
+                                    .updateBookingStatus(
+                                  booking,
+                                  "Rechazada",
+                                );
 
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
-                                ),
+                                setState(() {});
+                              },
 
-                                const SizedBox(
-                                  height: 10,
-                                ),
-
-                                Text(
-                                  'Horario: ${booking.timeSlot}',
-                                ),
-
-                                Text(
-                                  'Estado: ${booking.status}',
-                                ),
-
-                                const SizedBox(
-                                  height: 10,
-                                ),
-
-                                Text(
-                                  booking.notes.isEmpty
-
-                                      ? 'Sin notas'
-
-                                      : booking.notes,
-                                ),
-                              ],
+                              child: const Text(
+                                "Rechazar",
+                              ),
                             ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
-          ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          )
         ],
       ),
     );

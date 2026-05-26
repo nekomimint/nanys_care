@@ -399,15 +399,15 @@ void initState() {
 
                   final booking = BookingModel(
 
-                    caregiverName:
-                        widget.caregiver.name,
+                    caregiverName: widget.caregiver.name,
+
+                    tutorName: "Krystina",
 
                     date: selectedDate!,
 
                     timeSlot: selectedSlot!,
 
-                    notes:
-                        notesController.text,
+                    notes: notesController.text,
 
                     status: "Pendiente",
                   );
