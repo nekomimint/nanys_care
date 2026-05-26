@@ -91,16 +91,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Text("NanysCare"),
+                    Text("Iniciar sesión"),
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(labelText: 'Correo'),
                     ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _passwordController,
                       decoration: const InputDecoration(
                         labelText: 'Contraseña',
                       ),
                     ),
+                    const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: signInWithEmail,
                       child: const Text('Entrar'),

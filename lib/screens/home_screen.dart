@@ -68,39 +68,29 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // BOTON BUSCAR
                 MouseRegion(
-
                   cursor: SystemMouseCursors.click,
 
                   child: GestureDetector(
-
                     onTap: () {
-
                       Navigator.push(
-
                         context,
 
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const SearchCaregiverScreen(),
+                          builder: (_) => const SearchCaregiverScreen(),
                         ),
                       );
                     },
 
                     child: Container(
-
                       padding: const EdgeInsets.all(10),
 
                       decoration: BoxDecoration(
-
                         color: Colors.pink.withOpacity(0.15),
 
                         shape: BoxShape.circle,
                       ),
 
-                      child: const Icon(
-                        Icons.search,
-                        color: Colors.pink,
-                      ),
+                      child: const Icon(Icons.search, color: Colors.pink),
                     ),
                   ),
                 ),
@@ -130,7 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(width: 12),
                 MouseRegion(
-
                   cursor: SystemMouseCursors.click,
 
                   child: GestureDetector(

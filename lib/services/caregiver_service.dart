@@ -1,13 +1,13 @@
 //Este archivo se usa para pruebas mientras está la base de datos, luego vemos que hacer con el
+
 import '../models/caregiver_model.dart';
 
 class CaregiverService {
-
   static List<CaregiverModel> caregivers = [
-
     CaregiverModel(
+      uid: "1",
 
-      name: "María López",
+      name: "Edgar Klassen",
 
       experience: "5 años de experiencia",
 
@@ -15,40 +15,21 @@ class CaregiverService {
 
       rating: 4.8,
 
-      imageUrl:
-          "https://i.pravatar.cc/300?img=5",
+      imageUrl: "https://i.pravatar.cc/300?img=5",
 
-      availability: [
-        "Lunes-Mañana",
-        "Martes-Tarde",
-      ],
+      availability: ["lunes-09:00", "lunes-13:00", "martes-16:00"],
 
-     reviews: [
+      reviews: [
+        ReviewModel(comment: "Muy amable con los niños", rating: 5),
 
-        ReviewModel(
-          comment:
-              "Muy amable con los niños",
+        ReviewModel(comment: "Siempre llega puntual", rating: 4.5),
 
-          rating: 5,
-        ),
-
-        ReviewModel(
-          comment:
-              "Siempre llega puntual",
-
-          rating: 4.5,
-        ),
-
-        ReviewModel(
-          comment:
-              "Excelente atención",
-
-          rating: 5,
-        ),
+        ReviewModel(comment: "Excelente atención", rating: 5),
       ],
     ),
 
     CaregiverModel(
+      uid: "2",
 
       name: "Ana Torres",
 
@@ -58,39 +39,21 @@ class CaregiverService {
 
       rating: 4.5,
 
-      imageUrl:
-          "https://i.pravatar.cc/300?img=10",
+      imageUrl: "https://i.pravatar.cc/300?img=10",
 
-      availability: [
-        "Viernes-Noche",
-      ],
+      availability: ["viernes-18:00", "sábado-10:00"],
 
       reviews: [
+        ReviewModel(comment: "Muy amable con los niños", rating: 5),
 
-        ReviewModel(
-          comment:
-              "Muy amable con los niños",
+        ReviewModel(comment: "Siempre llega puntual", rating: 4.5),
 
-          rating: 5,
-        ),
-
-        ReviewModel(
-          comment:
-              "Siempre llega puntual",
-
-          rating: 4.5,
-        ),
-
-        ReviewModel(
-          comment:
-              "Excelente atención",
-
-          rating: 5,
-        ),
+        ReviewModel(comment: "Excelente atención", rating: 5),
       ],
     ),
 
     CaregiverModel(
+      uid: "3",
 
       name: "Fernanda Ruiz",
 
@@ -100,35 +63,16 @@ class CaregiverService {
 
       rating: 4.9,
 
-      imageUrl:
-          "https://i.pravatar.cc/300?img=20",
+      imageUrl: "https://i.pravatar.cc/300?img=20",
 
-      availability: [
-        "Miércoles-Mañana",
-      ],
+      availability: ["miércoles-08:00", "jueves-15:00"],
 
       reviews: [
+        ReviewModel(comment: "Muy amable con los niños", rating: 5),
 
-        ReviewModel(
-          comment:
-              "Muy amable con los niños",
+        ReviewModel(comment: "Siempre llega puntual", rating: 4.5),
 
-          rating: 5,
-        ),
-
-        ReviewModel(
-          comment:
-              "Siempre llega puntual",
-
-          rating: 4.5,
-        ),
-
-        ReviewModel(
-          comment:
-              "Excelente atención",
-
-          rating: 5,
-        ),
+        ReviewModel(comment: "Excelente atención", rating: 5),
       ],
     ),
   ];

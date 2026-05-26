@@ -70,40 +70,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: _cambiarFoto,
                     child: CircleAvatar(
                       radius: 35,
-                      backgroundColor: AppColors.primary,
-                      backgroundImage: _photoUrl.isNotEmpty
+                      backgroundImage:
+                          _photoUrl
+                              .isNotEmpty // ← _photoUrl con guión bajo
                           ? NetworkImage(_photoUrl)
                           : null,
                       child: _photoUrl.isEmpty
-                          ? const Icon(
-                              Icons.person,
-                              size: 40,
-                              color: Colors.white,
-                            )
+                          ? const Icon(Icons.person, color: Colors.white)
                           : null,
                     ),
                   ),
                   const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        switch (widget.user.role) {
-                          'admin' => 'Admin: ${widget.user.name}',
-                          'caregiver' => 'Cuidador: ${widget.user.name}',
-                          _ => 'Tutor: ${widget.user.name}',
-                        },
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          switch (widget.user.role) {
+                            'admin' => 'Admin: ${widget.user.name}',
+                            'caregiver' => 'Cuidador: ${widget.user.name}',
+                            _ => 'Tutor: ${widget.user.name}',
+                          },
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        widget.user.email,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
+                        Text(
+                          widget.user.email,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

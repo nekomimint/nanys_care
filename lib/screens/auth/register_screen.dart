@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../services/auth_service.dart';
+
+import './registers/parent_register_screen.dart';
+import './registers/caregiver_register_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -55,41 +59,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Center(
             child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Nombre'),
-                      validator: (v) =>
-                          v == null || v.isEmpty ? 'Ingresa tu nombre' : null,
-                    ),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Correo'),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (v) =>
-                          v == null || v.isEmpty ? 'Ingresa tu correo' : null,
-                    ),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(
-                        labelText: 'Contraseña',
-                      ),
-                      obscureText: true,
-                      validator: (v) => v == null || v.length < 6
-                          ? 'Mínimo 6 caracteres'
-                          : null,
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: _createAccount,
-                      child: const Text('Crear cuenta'),
-                    ),
-                  ],
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  //* Titulo de seleccionar tipo de rol:
+                  Text("¿Qué planeas hacer?"),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CaregiverRegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text("Cuidador"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParentRegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text("Tutor"),
+                  ),
+                ],
               ),
             ),
           ),

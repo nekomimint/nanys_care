@@ -1,12 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter/foundation.dart'; // kIsWeb
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class StorageService {
-  static const _cloudName = 'dcdnebce5';
-  static const _uploadPreset = 'nanyscarephotos';
-
   Future<String> subirFotoPerfil(String uid) async {
     try {
       final picker = ImagePicker();
@@ -19,39 +16,20 @@ class StorageService {
 
       if (picked == null) return '';
 
-      final uri = Uri.parse(
-        'https://api.cloudinary.com/v1_1/$_cloudName/image/upload',
-      );
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-
-      final request = http.MultipartRequest('POST', uri)
-        ..fields['upload_preset'] = 'nanyscarephotos'
-        ..fields['folder'] = 'profile_pictures'
-        ..fields['public_id'] = '${uid}_$timestamp';
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('profile_pictures')
+          .child('$uid.jpg'); // ← mismo uid = sobreescribe automático
 
       if (kIsWeb) {
-        // Web — leer como bytes
         final bytes = await picked.readAsBytes();
-        request.files.add(
-          http.MultipartFile.fromBytes('file', bytes, filename: '$uid.jpg'),
-        );
+        await ref.putData(bytes); // ← web usa bytes
       } else {
-        // Móvil — usar path
-        request.files.add(
-          await http.MultipartFile.fromPath('file', picked.path),
-        );
+        await ref.putFile(File(picked.path)); // ← móvil usa File
       }
 
-      final response = await request.send();
-      final body = await response.stream.bytesToString();
-      final json = jsonDecode(body);
-
-      if (response.statusCode != 200) {
-        print('Error Cloudinary: $body');
-        return '';
-      }
-
-      return json['secure_url'] ?? '';
+      final url = await ref.getDownloadURL();
+      return url;
     } catch (e) {
       print('Error subiendo foto: $e');
       return '';
