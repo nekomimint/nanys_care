@@ -6,6 +6,7 @@ import '../../widgets/search_button.dart';
 import '../../widgets/greetin_header.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../widgets/screens_by_role_.dart';
+import '../caregiver/reglamento_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user; // ← campo
@@ -63,11 +64,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       MaterialPageRoute(
                         builder: (_) => const SearchCaregiverScreen(),
                       ),
+                      
                     ),
                   ),
-                // ← sin Spacer
+
+                  if (widget.user.role == 'caregiver')
+                    TextButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ReglamentoScreen()),
+                      ),
+                      style: TextButton.styleFrom(
+                        foregroundColor: const Color(0xFFAC7099),
+                      ),
+                      child: const Text(
+                        'Leer reglamento',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+      
                 GreetingHeader(
-                  // ← sin Flexible
+               
                   name: widget.user.name,
                   photoUrl: widget.user.photoUrl,
                   onPhotoTap: () => _onItemTapped(3),
