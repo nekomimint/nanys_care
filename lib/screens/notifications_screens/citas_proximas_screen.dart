@@ -1,43 +1,30 @@
 import 'package:flutter/material.dart';
-
+import '../../../models/user_model.dart';
+ 
 class CitasProximasScreen extends StatelessWidget {
-  const CitasProximasScreen({super.key});
-
+  final UserModel user;
+  const CitasProximasScreen({super.key, required this.user});
+ 
   @override
   Widget build(BuildContext context) {
-    // Colores de la interfaz
-    const detailLinkColor = Color(0xFF2E7D73); // Verde para "Ver detalles"
-
-    // Datos simulados para las tarjetas de citas próximas
+    const detailLinkColor = Color(0xFF2E7D73);
+ 
     final List<Map<String, dynamic>> citasProximas = [
       {
         'nombre': 'Sarah B.',
-        'rating': '4.5',
+        'rating': 4.5,
         'exp': 'Exp: 4 años con bebés',
         'tarifa': 'Tarifa: \$135 MXN/h',
-        'foto': 'https://i.pravatar.cc/150?img=47'
-      },
-      {
-        'nombre': 'Michael K.',
-        'rating': '4.3',
-        'exp': 'Exp: 6 años, certificada',
-        'tarifa': 'Tarifa: \$150 MXN/h',
-        'foto': 'https://i.pravatar.cc/150?img=33'
-      },
-      {
-        'nombre': 'Olivia P.',
-        'rating': '4.5',
-        'exp': 'Exp: 3 años, bilingüe',
-        'tarifa': 'Tarifa: \$110 MXN/h',
-        'foto': 'https://i.pravatar.cc/150?img=49'
       },
     ];
-
+ 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       itemCount: citasProximas.length,
       itemBuilder: (context, index) {
         final item = citasProximas[index];
+        final double rating = item['rating'];
+ 
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
@@ -56,43 +43,24 @@ class CitasProximasScreen extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Imagen con el mini avatar superpuesto
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.network(
-                        item['foto'],
-                        width: 85,
-                        height: 85,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(1.5),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundImage: NetworkImage(item['foto']),
-                        ),
-                      ),
-                    ),
-                  ],
+                // Avatar genérico
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey.shade200,
+                  child: const Icon(
+                    Icons.person,
+                    size: 40,
+                    color: Colors.grey,
+                  ),
                 ),
                 const SizedBox(width: 16),
-                
-                // Información Central de la tarjeta
+ 
+                // Información central
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Nombre y Estrellas alineados arriba
+                      // Nombre y estrellas
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -105,25 +73,22 @@ class CitasProximasScreen extends StatelessWidget {
                             ),
                           ),
                           Row(
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber, size: 16),
-                              Text(
-                                " (${item['rating']})",
-                                style: const TextStyle(color: Colors.grey, fontSize: 13),
-                              ),
-                            ],
+                            children: List.generate(5, (i) => Icon(
+                              Icons.star,
+                              size: 16,
+                              color: i < rating.floor()
+                                  ? Colors.amber
+                                  : Colors.grey.shade300,
+                            )),
                           ),
                         ],
                       ),
                       const SizedBox(height: 4),
-                      
-                      // Texto de Experiencia
+ 
                       Text(
                         item['exp'],
                         style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
                       ),
-                      
-                      // Texto de Tarifa
                       Text(
                         item['tarifa'],
                         style: const TextStyle(
@@ -131,16 +96,12 @@ class CitasProximasScreen extends StatelessWidget {
                           fontSize: 13,
                         ),
                       ),
-                      
                       const SizedBox(height: 8),
-                      
-                      // Enlace centrado para "Ver detalles"
+ 
                       Align(
                         alignment: Alignment.center,
                         child: GestureDetector(
-                          onTap: () {
-                            // Aquí manejarás la navegación o acción al presionar
-                          },
+                          onTap: () {},
                           child: const Text(
                             'Ver detalles',
                             style: TextStyle(

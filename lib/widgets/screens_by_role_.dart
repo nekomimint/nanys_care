@@ -3,6 +3,8 @@ import '../models/user_model.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/agenda/agenda_screen.dart';
 
+import '../screens/notifications_screens/mis_solicitudes_screen.dart';
+
 class ScreensByRole {
   static List<Widget> get({
     required UserModel user,
@@ -24,7 +26,8 @@ class ScreensByRole {
       _ => [
         // parent
         homeContent,
-        const Center(child: Text('Notificaciones')),
+        NotificationsScreen(user: user),
+        //const Center(child: Text('Notificaciones')),
         AgendaScreen(user: user),
         ProfileScreen(user: user),
       ],

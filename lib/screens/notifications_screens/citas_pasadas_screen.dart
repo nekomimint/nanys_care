@@ -1,37 +1,20 @@
 import 'package:flutter/material.dart';
-
-
-
-// la ventana de califcar:
+import '../../../models/user_model.dart';
 import '../../widgets/calificator_dialog.dart';
 
 class CitasPasadasScreen extends StatelessWidget {
-  const CitasPasadasScreen({super.key});
+  final UserModel user;
+  const CitasPasadasScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    // Color para el botón "Calificar" (Rojo/Rosa fuerte según la imagen)
     const rateButtonColor = Color(0xFFC93B3B);
 
-    // Datos simulados para las citas pasadas
     final List<Map<String, dynamic>> citasPasadas = [
       {
         'nombre': 'Sarah B.',
-        'rating': '4.5',
-        'fecha': 'Finalizo: 12 Mayo 2024',
-        'foto': 'https://i.pravatar.cc/150?img=47'
-      },
-      {
-        'nombre': 'Michael K.',
-        'rating': '4.3',
-        'fecha': 'Finalizo: 10 Mayo 2024',
-        'foto': 'https://i.pravatar.cc/150?img=33'
-      },
-      {
-        'nombre': 'Olivia P.',
-        'rating': '4.5',
-        'fecha': 'Finalizo: 08 Mayo 2024',
-        'foto': 'https://i.pravatar.cc/150?img=49'
+        'rating': 4.5,
+        'fecha': 'Finalizó: 12 Mayo 2024',
       },
     ];
 
@@ -40,6 +23,8 @@ class CitasPasadasScreen extends StatelessWidget {
       itemCount: citasPasadas.length,
       itemBuilder: (context, index) {
         final item = citasPasadas[index];
+        final double rating = item['rating'];
+
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
@@ -57,38 +42,15 @@ class CitasPasadasScreen extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
-                // Imagen con el mini avatar superpuesto
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.network(
-                        item['foto'],
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(1.5),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                          radius: 11,
-                          backgroundImage: NetworkImage(item['foto']),
-                        ),
-                      ),
-                    ),
-                  ],
+                // Avatar genérico
+                CircleAvatar(
+                  radius: 37,
+                  backgroundColor: Colors.grey.shade200,
+                  child: const Icon(Icons.person, size: 38, color: Colors.grey),
                 ),
                 const SizedBox(width: 16),
-                
-                // Información Central
+
+                // Información central
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,15 +66,21 @@ class CitasPasadasScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          ...List.generate(5, (i) => Icon(
+                            Icons.star,
+                            size: 16,
+                            color: i < rating.floor()
+                                ? Colors.amber
+                                : Colors.grey.shade300,
+                          )),
+                          const SizedBox(width: 4),
                           Text(
-                            " (${item['rating']})",
+                            '($rating)',
                             style: const TextStyle(color: Colors.grey, fontSize: 13),
                           ),
                         ],
                       ),
                       const SizedBox(height: 4),
-                      // Fecha de finalización
                       Text(
                         item['fecha'],
                         style: const TextStyle(
@@ -122,9 +90,6 @@ class CitasPasadasScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      
-                      // Botón Calificado / Calificar
-                      // En la imagen se ve que al presionar se vuelve "Calificado"
                       GestureDetector(
                         onTap: () {
                           CalificarDialog.mostrar(context, item['nombre']);
