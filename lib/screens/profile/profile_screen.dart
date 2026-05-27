@@ -11,6 +11,7 @@ import './parent/parent_profile.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../widgets/greetin_header.dart';
+import '../../widgets/profile_options/option_profile.dart';
 
 class ProfileScreen extends StatefulWidget {
   final UserModel user;
@@ -60,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end, // ← separa los hijos
                 children: [
@@ -68,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   GreetingHeader(
                     name: widget.user.name, // ← solo el nombre, sin rol
                     photoUrl: widget.user.photoUrl,
-                    onPhotoTap: () => _cambiarFoto,
+                    onPhotoTap: () => _cambiarFoto(),
                   ),
                 ],
               ),
@@ -80,11 +81,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'caregiver' => CaregiverProfile(user: widget.user),
               _ => const Center(child: Text('Rol desconocido')),
             },
-            ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-              },
-              child: const Text('Cerrar sesión'),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: OptionProfile(
+                user: widget.user,
+                icon: Icons.logout,
+                titleButton: 'Cerrar sesión',
+                color: Colors.white,
+                backgroundColor: Color.fromARGB(255, 255, 79, 79),
+                onTap: () async => await FirebaseAuth.instance.signOut(),
+              ),
             ),
           ],
         ),

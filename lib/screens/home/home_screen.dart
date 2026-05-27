@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../profile/profile_screen.dart';
 import 'caregiver/search_caregiver_screen.dart';
 import '../../models/user_model.dart';
 import '../../widgets/search_button.dart';
 import '../../widgets/greetin_header.dart';
-import '../agenda/agenda_screen.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../widgets/screens_by_role_.dart';
 
@@ -145,7 +143,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(
                               'Menú Especial $index',
                               style: const TextStyle(
-                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                               ),

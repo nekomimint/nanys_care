@@ -6,12 +6,16 @@ class OptionProfile extends StatefulWidget {
   final VoidCallback onTap;
   final String titleButton;
   final IconData icon;
+  final Color? color;
+  final Color? backgroundColor;
   const OptionProfile({
     super.key,
     required this.user,
     required this.titleButton,
     required this.onTap,
     required this.icon,
+    this.color,
+    this.backgroundColor,
   });
 
   @override
@@ -23,7 +27,7 @@ class _OptionProfile extends State<OptionProfile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: widget.backgroundColor ?? Colors.white,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -34,15 +38,21 @@ class _OptionProfile extends State<OptionProfile> {
         ],
       ),
       child: ListTile(
-        leading: Icon(widget.icon, color: Colors.black54),
+        tileColor: Colors.transparent,
+        leading: Icon(widget.icon, color: widget.color ?? Colors.black54),
         title: Text(
           widget.titleButton,
-          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: widget.color ?? Colors.black54,
+          ),
         ),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.arrow_forward_ios,
           size: 16,
-          color: Colors.black54,
+          color: widget.color ?? Colors.black54,
         ),
         onTap: widget.onTap,
       ),
