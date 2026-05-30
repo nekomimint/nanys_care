@@ -3,6 +3,7 @@ import '../../../models/user_model.dart';
 import '../../../models/caregiver_model.dart';
 import '../../../widgets/profile_options/option_profile.dart';
 import './edit_caregiver_sheet.dart';
+import '../../caregiver/reglamento_screen.dart';
 
 class CaregiverProfile extends StatefulWidget {
   final UserModel user;
@@ -97,6 +98,16 @@ class _CaregiverProfileState extends State<CaregiverProfile> {
                   icon: Icons.edit,
                   titleButton: 'Editar perfil',
                   onTap: _openEditProfile,
+                ),
+                const SizedBox(height: 20),
+                OptionProfile(
+                  user: widget.user,
+                  icon: Icons.rule,
+                  titleButton: 'Normas',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ReglamentoScreen()),
+                  ),
                 ),
               ],
             ),
