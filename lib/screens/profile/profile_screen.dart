@@ -13,6 +13,9 @@ import '../../core/theme/app_colors.dart';
 import '../../widgets/greetin_header.dart';
 import '../../widgets/profile_options/option_profile.dart';
 
+import '../../models/caregiver_model.dart';
+import './caregiver/caregiver_profile.dart';
+
 class ProfileScreen extends StatefulWidget {
   final UserModel user;
   const ProfileScreen({super.key, required this.user});
@@ -76,9 +79,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 15),
             switch (widget.user.role) {
+              'caregiver' => FutureBuilder<DocumentSnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('caregivers')
+                    .doc(widget.user.uid)
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const Text('No se encontró el perfil');
+                  }
+
+                  final caregiver = CaregiverModel.fromFirestore(
+                    snapshot.data!.data() as Map<String, dynamic>,
+                  );
+
+                  return CaregiverProfile(
+                    user: widget.user,
+                    caregiver: caregiver, // ← ya con los datos de Firestore
+                  );
+                },
+              ),
               'admin' => AdminProfile(user: widget.user),
               'parent' => ParentProfile(user: widget.user),
-              'caregiver' => CaregiverProfile(user: widget.user),
               _ => const Center(child: Text('Rol desconocido')),
             },
             Padding(

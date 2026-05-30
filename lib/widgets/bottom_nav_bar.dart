@@ -34,10 +34,7 @@ class AppBottomNavBar extends StatelessWidget {
           icon: Icon(Icons.notifications),
           label: 'Notis',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_month),
-          label: 'Agenda',
-        ),
+
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
       'admin' => const [
@@ -53,10 +50,7 @@ class AppBottomNavBar extends StatelessWidget {
           icon: Icon(Icons.notifications),
           label: 'Notis',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_month),
-          label: 'Agenda',
-        ),
+
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
       ],
     };

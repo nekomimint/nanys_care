@@ -1,240 +1,300 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
+import '../../../models/caregiver_model.dart';
+import '../../../models/user_model.dart';
 import '../../../services/caregiver_service.dart';
+import '../../../services/booking_service.dart';
 import '../../../widgets/caregiver_card.dart';
+import '../../../widgets/caregiver_profile_screen.dart';
 
 class SearchCaregiverScreen extends StatefulWidget {
-  const SearchCaregiverScreen({super.key});
+  final UserModel user;
+  const SearchCaregiverScreen({super.key, required this.user});
 
   @override
   State<SearchCaregiverScreen> createState() => _SearchCaregiverScreenState();
 }
 
 class _SearchCaregiverScreenState extends State<SearchCaregiverScreen> {
-  RangeValues priceRange = const RangeValues(100, 500);
+  static const _purple = Color(0xFFAC7099);
 
-  final List<String> selectedAvailability = [];
+  // Calendario
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
 
-  final List<String> timeSlots = ['Mañana', 'Mediodía', 'Tarde', 'Noche'];
+  // Bloque
+  String? _selectedBlock;
+  final List<String> _blocks = ['manana', 'mediodia', 'tarde', 'noche'];
+  final Map<String, String> _blockLabels = {
+    'manana': 'Mañana',
+    'mediodia': 'Mediodía',
+    'tarde': 'Tarde',
+    'noche': 'Noche',
+  };
 
-  final List<String> days = [
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo',
-  ];
+  // Precio
+  RangeValues _priceRange = const RangeValues(100, 500);
 
-  void toggleAvailability(String slot) {
+  // Resultados
+  List<CaregiverModel> _results = [];
+  bool _loading = false;
+  bool _searched = false;
+
+  Future<void> _search() async {
+    if (_selectedDay == null || _selectedBlock == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona una fecha y un bloque')),
+      );
+      return;
+    }
+
     setState(() {
-      if (selectedAvailability.contains(slot)) {
-        selectedAvailability.remove(slot);
-      } else {
-        selectedAvailability.add(slot);
-      }
+      _loading = true;
+      _searched = true;
     });
+
+    try {
+      // 1. Trae todos los caregivers dentro del rango de precio
+      final all = await CaregiverService.getCaregiversByPrice(
+        minPrice: _priceRange.start.toInt(),
+        maxPrice: _priceRange.end.toInt(),
+      );
+
+      // 2. Filtra los que tienen el bloque disponible en esa fecha
+      final available = <CaregiverModel>[];
+      await Future.wait(
+        all.map((c) async {
+          final isAvailable = await BookingService.isBlockAvailable(
+            caregiverUid: c.uid,
+            date: _selectedDay!,
+            timeBlock: _selectedBlock!,
+          );
+          if (isAvailable) available.add(c);
+        }),
+      );
+
+      // 3. Ordena por rating
+      available.sort((a, b) => b.rating.compareTo(a.rating));
+
+      setState(() => _results = available);
+    } finally {
+      setState(() => _loading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F9F8),
-
       appBar: AppBar(
-        title: const Text("Buscar cuidadores"),
-        backgroundColor: const Color(0xFFAC7099),
+        title: const Text('Buscar cuidadores'),
+        backgroundColor: _purple,
         foregroundColor: Colors.white,
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
-            // EXPERIENCIA
+            // ── Calendario ──────────────────────────────
             const Text(
-              "Experiencia mínima",
+              'Selecciona una fecha',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-
             const SizedBox(height: 10),
-
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TableCalendar(
+                firstDay: DateTime.now(),
+                lastDay: DateTime.now().add(const Duration(days: 60)),
+                focusedDay: _focusedDay,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                onDaySelected: (selected, focused) {
+                  setState(() {
+                    _selectedDay = selected;
+                    _focusedDay = focused;
+                  });
+                },
+                calendarStyle: CalendarStyle(
+                  selectedDecoration: const BoxDecoration(
+                    color: _purple,
+                    shape: BoxShape.circle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: _purple.withOpacity(0.3),
+                    shape: BoxShape.circle,
+                  ),
+                  outsideDaysVisible: false,
+                ),
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
                 ),
               ),
-
-              items: const [
-                DropdownMenuItem(value: "1", child: Text("1+ años")),
-
-                DropdownMenuItem(value: "3", child: Text("3+ años")),
-
-                DropdownMenuItem(value: "5", child: Text("5+ años")),
-              ],
-
-              onChanged: (value) {},
             ),
+            const SizedBox(height: 24),
 
-            const SizedBox(height: 25),
-
-            // PRECIO
+            // ── Bloques ──────────────────────────────────
             const Text(
-              "Rango de precio",
+              'Bloque de horario',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-
+            const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-              children: [
-                Text(
-                  '\$${priceRange.start.round()}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-
-                Text(
-                  '\$${priceRange.end.round()}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-
-            RangeSlider(
-              values: priceRange,
-              min: 50,
-              max: 1000,
-
-              divisions: 19,
-
-              labels: RangeLabels(
-                '\$${priceRange.start.round()}',
-                '\$${priceRange.end.round()}',
-              ),
-
-              onChanged: (values) {
-                setState(() {
-                  priceRange = values;
-                });
-              },
-            ),
-
-            const SizedBox(height: 25),
-
-            const Text(
-              "Disponibilidad",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-
-            const SizedBox(height: 10),
-
-            Column(
-              children: days.map((day) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 15),
-
-                  padding: const EdgeInsets.all(15),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-
-                    borderRadius: BorderRadius.circular(15),
-
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-
-                        blurRadius: 8,
-
-                        offset: const Offset(0, 4),
+              children: _blocks.map((block) {
+                final selected = _selectedBlock == block;
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedBlock = block),
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: selected ? _purple : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
-                    children: [
-                      Text(
-                        day,
-
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                      child: Text(
+                        _blockLabels[block]!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: selected ? Colors.white : Colors.black54,
                         ),
                       ),
-
-                      const SizedBox(height: 10),
-
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-
-                        children: timeSlots.map((slot) {
-                          final key = '$day-$slot';
-
-                          final isSelected = selectedAvailability.contains(key);
-
-                          return FilterChip(
-                            label: Text(slot),
-
-                            selected: isSelected,
-
-                            selectedColor: const Color(0xFFAC7099),
-
-                            onSelected: (_) {
-                              setState(() {
-                                if (isSelected) {
-                                  selectedAvailability.remove(key);
-                                } else {
-                                  selectedAvailability.add(key);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ],
+                    ),
                   ),
                 );
               }).toList(),
             ),
+            const SizedBox(height: 24),
 
-            const SizedBox(height: 30),
-
-            const Text(
-              "Cuidadores disponibles",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            // ── Precio ───────────────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Rango de precio',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Text(
+                  '\$${_priceRange.start.round()} — \$${_priceRange.end.round()}',
+                  style: const TextStyle(color: Colors.black45, fontSize: 14),
+                ),
+              ],
             ),
-
-            const SizedBox(height: 15),
-
-            ListView.builder(
-              shrinkWrap: true,
-
-              physics: const NeverScrollableScrollPhysics(),
-
-              itemCount: CaregiverService.caregivers.length,
-
-              itemBuilder: (context, index) {
-                final caregiver = CaregiverService.caregivers[index];
-
-                return CaregiverCard(caregiver: caregiver);
-              },
+            RangeSlider(
+              values: _priceRange,
+              min: 50,
+              max: 1000,
+              divisions: 19,
+              activeColor: _purple,
+              labels: RangeLabels(
+                '\$${_priceRange.start.round()}',
+                '\$${_priceRange.end.round()}',
+              ),
+              onChanged: (values) => setState(() => _priceRange = values),
             ),
+            const SizedBox(height: 24),
+
+            // ── Botón buscar ─────────────────────────────
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _purple,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                onPressed: _loading ? null : _search,
+                child: _loading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Buscar cuidadores',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // ── Resultados ───────────────────────────────
+            if (_searched) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Cuidadores disponibles',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  Text(
+                    '${_results.length} resultados',
+                    style: const TextStyle(color: Colors.black45, fontSize: 14),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (_results.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(32),
+                    child: Text(
+                      'No hay cuidadores disponibles',
+                      style: TextStyle(color: Colors.black45),
+                    ),
+                  ),
+                )
+              else
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _results.length,
+                  itemBuilder: (context, index) {
+                    return CaregiverCard(
+                      caregiver: _results[index],
+                      onTap: () => Navigator.push(
+                        // ← reemplaza el onTap vacío
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CaregiverProfileScreen(
+                            caregiver: _results[index],
+                            tutor: widget.user,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ],
           ],
         ),
       ),

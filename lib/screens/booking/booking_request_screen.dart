@@ -47,7 +47,7 @@ class _BookingRequestScreenState extends State<BookingRequestScreen> {
 
               const SizedBox(height: 10),
 
-              Text('Horario: ${widget.booking.timeSlot}'),
+              Text('Horario: ${widget.booking.timeBlock}'),
 
               Text('Estado: ${widget.booking.status}'),
 

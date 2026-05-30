@@ -138,7 +138,7 @@ class _BookingCard extends StatelessWidget {
               children: [
                 const Icon(Icons.access_time, size: 16, color: Colors.grey),
                 const SizedBox(width: 8),
-                Text(booking.timeSlot, style: const TextStyle(fontSize: 14)),
+                Text(booking.timeBlock, style: const TextStyle(fontSize: 14)),
               ],
             ),
             if (booking.notes.isNotEmpty) ...[

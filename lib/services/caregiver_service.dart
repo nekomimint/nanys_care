@@ -1,79 +1,59 @@
-//Este archivo se usa para pruebas mientras está la base de datos, luego vemos que hacer con el
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/caregiver_model.dart';
 
 class CaregiverService {
-  static List<CaregiverModel> caregivers = [
-    CaregiverModel(
-      uid: "1",
+  static Future<List<CaregiverModel>> getTopCaregivers({int limit = 10}) async {
+    final snap = await FirebaseFirestore.instance
+        .collection('caregivers')
+        .orderBy('rating', descending: true)
+        .limit(limit)
+        .get();
 
-      name: "Edgar Klassen",
+    // Trae los users en paralelo para obtener las fotos
+    final caregivers = await Future.wait(
+      snap.docs.map((doc) async {
+        final data = doc.data();
+        final uid = data['uid'] ?? '';
 
-      experience: "5 años de experiencia",
+        // Consulta el user para obtener photoUrl
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .get();
 
-      price: 250,
+        final photoUrl = userDoc.data()?['photoUrl'] ?? '';
+        return CaregiverModel.fromFirestore({...data, 'imageUrl': photoUrl});
+      }),
+    );
 
-      rating: 4.8,
+    return caregivers;
+  }
 
-      imageUrl: "https://i.pravatar.cc/300?img=5",
+  static Future<List<CaregiverModel>> getCaregiversByPrice({
+    required int minPrice,
+    required int maxPrice,
+  }) async {
+    print('Buscando caregivers entre \$$minPrice y \$$maxPrice');
+    final snap = await FirebaseFirestore.instance
+        .collection('caregivers')
+        .where('price', isGreaterThanOrEqualTo: minPrice)
+        .where('price', isLessThanOrEqualTo: maxPrice)
+        .get(const GetOptions(source: Source.server));
+    print('Caregivers encontrados: ${snap.docs.length}');
+    // Cruza con users para obtener fotos
+    final caregivers = await Future.wait(
+      snap.docs.map((doc) async {
+        final data = doc.data();
+        final uid = data['uid'] ?? '';
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .get();
+        final photoUrl = userDoc.data()?['photoUrl'] ?? '';
+        return CaregiverModel.fromFirestore({...data, 'imageUrl': photoUrl});
+      }),
+    );
 
-      availability: ["lunes-09:00", "lunes-13:00", "martes-16:00"],
-
-      reviews: [
-        ReviewModel(comment: "Muy amable con los niños", rating: 5),
-
-        ReviewModel(comment: "Siempre llega puntual", rating: 4.5),
-
-        ReviewModel(comment: "Excelente atención", rating: 5),
-      ],
-    ),
-
-    CaregiverModel(
-      uid: "2",
-
-      name: "Ana Torres",
-
-      experience: "3 años de experiencia",
-
-      price: 180,
-
-      rating: 4.5,
-
-      imageUrl: "https://i.pravatar.cc/300?img=10",
-
-      availability: ["viernes-18:00", "sábado-10:00"],
-
-      reviews: [
-        ReviewModel(comment: "Muy amable con los niños", rating: 5),
-
-        ReviewModel(comment: "Siempre llega puntual", rating: 4.5),
-
-        ReviewModel(comment: "Excelente atención", rating: 5),
-      ],
-    ),
-
-    CaregiverModel(
-      uid: "3",
-
-      name: "Fernanda Ruiz",
-
-      experience: "7 años de experiencia",
-
-      price: 320,
-
-      rating: 4.9,
-
-      imageUrl: "https://i.pravatar.cc/300?img=20",
-
-      availability: ["miércoles-08:00", "jueves-15:00"],
-
-      reviews: [
-        ReviewModel(comment: "Muy amable con los niños", rating: 5),
-
-        ReviewModel(comment: "Siempre llega puntual", rating: 4.5),
-
-        ReviewModel(comment: "Excelente atención", rating: 5),
-      ],
-    ),
-  ];
+    return caregivers;
+  }
 }

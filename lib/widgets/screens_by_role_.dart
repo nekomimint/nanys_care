@@ -2,33 +2,34 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/agenda/agenda_screen.dart';
-
-import '../screens/notifications_screens/mis_solicitudes_screen.dart';
+import '../screens/notifications/notifications_screen.dart';
 
 class ScreensByRole {
   static List<Widget> get({
     required UserModel user,
     required Widget homeContent,
+    int notificationsKey = 0, // ← parámetro opcional para no romper otros usos
   }) {
     return switch (user.role) {
       'caregiver' => [
         homeContent,
-        const Center(child: Text('Notificaciones')),
-        AgendaScreen(user: user),
+        NotificationsScreen(
+          key: ValueKey(notificationsKey), // ← key aquí
+          user: user,
+        ),
+
         ProfileScreen(user: user),
       ],
-      'admin' => [
+      'parent' => [
         homeContent,
-        const Center(child: Text('Usuarios')),
-        const Center(child: Text('Stats')),
+        NotificationsScreen(key: ValueKey(notificationsKey), user: user),
+
         ProfileScreen(user: user),
       ],
       _ => [
-        // parent
         homeContent,
-        NotificationsScreen(user: user),
-        //const Center(child: Text('Notificaciones')),
-        AgendaScreen(user: user),
+        NotificationsScreen(key: ValueKey(notificationsKey), user: user),
+
         ProfileScreen(user: user),
       ],
     };
